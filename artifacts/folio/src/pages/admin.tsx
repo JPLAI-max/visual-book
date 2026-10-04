@@ -6,10 +6,11 @@ import { Block, ErrorState, Message } from '@/components/States';
 import { RowDetail } from '@/components/admin/RowDetail';
 import { BookForm } from '@/components/admin/BookForm';
 import { SettingsPanel } from '@/components/admin/SettingsPanel';
+import { IntelligencePanel } from '@/components/admin/intelligence/IntelligencePanel';
 import { useReader } from '@/lib/use-reader';
 import { label } from '@/lib/format';
 
-const SECTIONS = ['catalog', 'requests', 'jobs', 'books', 'editions', 'chapters', 'scenes', 'characters', 'environments', 'feedback', 'analytics', 'rights', 'costs', 'providers', 'settings'];
+const SECTIONS = ['catalog', 'requests', 'jobs', 'books', 'editions', 'chapters', 'scenes', 'characters', 'environments', 'feedback', 'analytics', 'rights', 'costs', 'providers', 'settings', 'intelligence'];
 
 function Stat({ k, v }: { k: string; v: string | number }) {
   return <div className="border-t pt-4"><p className="eyebrow">{k}</p><p className="serif mt-2 text-4xl" data-testid={`stat-${k}`}>{v}</p></div>;
@@ -82,7 +83,7 @@ export default function Admin() {
         </nav>
         <div className="min-w-0">
           <h1 className="serif mb-10 text-5xl capitalize">{section ?? 'Overview'}</h1>
-          {!valid ? <Message title="Unknown section" /> : section ? <Section key={section} name={section} /> : <Overview />}
+          {!valid ? <Message title="Unknown section" /> : section === 'intelligence' ? <IntelligencePanel /> : section ? <Section key={section} name={section} /> : <Overview />}
         </div>
       </div>
     </Shell>

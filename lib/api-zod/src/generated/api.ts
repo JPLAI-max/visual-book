@@ -8,6 +8,69 @@
 import * as zod from 'zod';
 
 
+export const GetBookIntelligenceParams = zod.object({
+  "bookId": zod.coerce.number().int()
+})
+
+export const GetBookIntelligenceResponse = zod.object({
+  "bookId": zod.number().int(),
+  "title": zod.string(),
+  "sources": zod.array(zod.record(zod.string(), zod.unknown())),
+  "analyses": zod.array(zod.record(zod.string(), zod.unknown())),
+  "activeAnalysis": zod.record(zod.string(), zod.unknown()).nullable(),
+  "sections": zod.record(zod.string(), zod.unknown()),
+  "chapters": zod.array(zod.record(zod.string(), zod.unknown())),
+  "characters": zod.array(zod.record(zod.string(), zod.unknown())),
+  "environments": zod.array(zod.record(zod.string(), zod.unknown())),
+  "scenes": zod.array(zod.record(zod.string(), zod.unknown())),
+  "jobs": zod.array(zod.record(zod.string(), zod.unknown()))
+})
+
+
+export const IngestBookSourceParams = zod.object({
+  "bookId": zod.coerce.number().int()
+})
+
+export const ingestBookSourceBodyRightsNotesMin = 10;
+export const ingestBookSourceBodyRightsNotesMax = 5000;
+
+export const ingestBookSourceBodyTextMax = 2000000;
+
+export const ingestBookSourceBodySourceUrlMax = 2000;
+
+
+
+export const IngestBookSourceBody = zod.object({
+  "sourceType": zod.enum(['public_domain', 'platform_owned', 'licensed', 'admin_entered']),
+  "rightsStatus": zod.enum(['public_domain', 'owned', 'licensed']),
+  "rightsNotes": zod.string().min(ingestBookSourceBodyRightsNotesMin).max(ingestBookSourceBodyRightsNotesMax),
+  "text": zod.string().max(ingestBookSourceBodyTextMax).optional(),
+  "sourceUrl": zod.string().max(ingestBookSourceBodySourceUrlMax).optional()
+})
+
+export const IngestBookSourceResponse = zod.object({
+  "success": zod.boolean(),
+  "message": zod.string()
+})
+
+
+export const RunIntelligenceActionParams = zod.object({
+  "bookId": zod.coerce.number().int()
+})
+
+export const RunIntelligenceActionBody = zod.object({
+  "operation": zod.enum(['analyze_book', 'reanalyze_chapter', 'regenerate_character', 'regenerate_environment', 'regenerate_scenes', 'retry_failed']),
+  "sourceId": zod.number().int().optional(),
+  "analysisId": zod.number().int().optional(),
+  "targetId": zod.number().int().optional()
+})
+
+export const RunIntelligenceActionResponse = zod.object({
+  "success": zod.boolean(),
+  "message": zod.string()
+})
+
+
 export const HealthCheckResponse = zod.object({
   "status": zod.string()
 })

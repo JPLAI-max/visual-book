@@ -1,0 +1,1 @@
+- [Analysis provider budgets](analysis-provider-budgets.md) — completion limits include reasoning; bound canonical jobs and state runtime units explicitly.

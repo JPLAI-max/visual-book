@@ -6,6 +6,49 @@ info:
 servers:
   - url: /api
 paths:
+  /admin/intelligence/books/{bookId}:
+    get:
+      operationId: getBookIntelligence
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Sources, analyses, canonical blueprint and durable jobs
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IntelligenceState" }
+  /admin/intelligence/books/{bookId}/sources:
+    post:
+      operationId: ingestBookSource
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SourceInput" }
+      responses:
+        "200":
+          description: Versioned source ingested into private storage
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /admin/intelligence/books/{bookId}/actions:
+    post:
+      operationId: runIntelligenceAction
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/IntelligenceActionInput" }
+      responses:
+        "200":
+          description: Analysis or targeted revision queued; never generates media
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
   /healthz:
     get:
       operationId: healthCheck
@@ -224,6 +267,38 @@ paths:
               schema: { $ref: "#/components/schemas/Success" }
 components:
   schemas:
+    SourceInput:
+      type: object
+      required: [sourceType, rightsStatus, rightsNotes]
+      properties:
+        sourceType: { type: string, enum: [public_domain, platform_owned, licensed, admin_entered] }
+        rightsStatus: { type: string, enum: [public_domain, owned, licensed] }
+        rightsNotes: { type: string, minLength: 10, maxLength: 5000 }
+        text: { type: string, maxLength: 2000000 }
+        sourceUrl: { type: string, maxLength: 2000 }
+    IntelligenceActionInput:
+      type: object
+      required: [operation]
+      properties:
+        operation: { type: string, enum: [analyze_book, reanalyze_chapter, regenerate_character, regenerate_environment, regenerate_scenes, retry_failed] }
+        sourceId: { type: integer }
+        analysisId: { type: integer }
+        targetId: { type: integer }
+    IntelligenceState:
+      type: object
+      required: [bookId, title, sources, analyses, activeAnalysis, sections, chapters, characters, environments, scenes, jobs]
+      properties:
+        bookId: { type: integer }
+        title: { type: string }
+        sources: { type: array, items: { type: object, additionalProperties: true } }
+        analyses: { type: array, items: { type: object, additionalProperties: true } }
+        activeAnalysis: { type: [object, "null"], additionalProperties: true }
+        sections: { type: object, additionalProperties: true }
+        chapters: { type: array, items: { type: object, additionalProperties: true } }
+        characters: { type: array, items: { type: object, additionalProperties: true } }
+        environments: { type: array, items: { type: object, additionalProperties: true } }
+        scenes: { type: array, items: { type: object, additionalProperties: true } }
+        jobs: { type: array, items: { type: object, additionalProperties: true } }
     HealthStatus:
       type: object
       required: [status]

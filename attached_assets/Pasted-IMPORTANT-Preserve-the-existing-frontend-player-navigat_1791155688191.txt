@@ -1,0 +1,344 @@
+IMPORTANT: Preserve the existing frontend, player, navigation, styling, layout, and user experience exactly as they currently work.
+
+DO NOT redesign the UI.
+DO NOT replace the current player.
+DO NOT change the homepage structure.
+DO NOT add social features in this phase.
+
+This phase is backend architecture only.
+
+GOAL
+
+Build the Book Intelligence Engine that turns a book into structured data before any expensive image or video generation happens.
+
+The output of this phase should be a complete structured plan for a visual edition.
+
+CORE PRINCIPLE
+
+Do not generate video first.
+
+The system must first understand:
+
+- what the book is
+- what happens
+- who the characters are
+- what locations matter
+- what concepts matter
+- what each chapter needs to communicate visually
+- how the book should be divided into scenes
+
+--------------------------------------------------
+1. BOOK INGESTION
+--------------------------------------------------
+
+Create a backend Book Intelligence service.
+
+It must support these source types:
+
+1. Public-domain text
+2. Platform-owned manuscript
+3. Licensed manuscript
+4. Admin-entered source text
+
+For the first test use only public-domain or platform-owned text.
+
+Do not ingest copyrighted books without rights.
+
+Store source metadata separately from the consumer-facing book record.
+
+Create a source record containing:
+
+book_id
+source_type
+source_text_location
+source_version
+rights_status
+ingested_at
+checksum/hash
+
+--------------------------------------------------
+2. ANALYSIS PIPELINE
+--------------------------------------------------
+
+When an admin starts analysis, process the book in stages.
+
+Stages:
+
+A. Book overview
+B. Chapter detection
+C. Character extraction
+D. Environment extraction
+E. Themes/concepts
+F. Story or learning structure
+G. Chapter summaries
+H. Scene planning
+I. Visual strategy
+J. Narration strategy
+
+Every stage must save structured output.
+
+Do not rely on one giant AI response.
+
+Use smaller validated jobs.
+
+--------------------------------------------------
+3. STRUCTURED BOOK OUTPUT
+--------------------------------------------------
+
+Create a structured Book Analysis object.
+
+Fields should include:
+
+book_id
+title
+author
+genre
+fiction_or_nonfiction
+time_period
+setting
+tone
+visual_style_recommendation
+narration_style
+target_runtime
+target_audience
+story_summary
+central_themes
+major_concepts
+historical_context
+content_warnings
+analysis_version
+
+--------------------------------------------------
+4. CHAPTER ANALYSIS
+--------------------------------------------------
+
+Each chapter should receive:
+
+chapter_number
+chapter_title
+summary
+key_events
+key_characters
+key_locations
+themes
+learning_objectives
+emotional_tone
+estimated_visual_runtime
+importance_score
+
+For fiction:
+focus on narrative events and emotional beats.
+
+For nonfiction:
+focus on concepts, examples, arguments, diagrams, and teaching moments.
+
+--------------------------------------------------
+5. CHARACTER BIBLE
+--------------------------------------------------
+
+Create a canonical Character Bible before scene generation.
+
+For every major recurring character store:
+
+name
+aliases
+role
+age or age range
+height/build
+hair
+eyes
+skin tone if relevant to source
+facial structure
+clothing
+era
+personality
+body language
+distinctive traits
+relationships
+canonical_visual_description
+canonical_generation_prompt
+reference_image_url
+consistency_notes
+
+The character description must remain stable across scenes.
+
+Never create a new description every time the same character appears.
+
+Create one canonical source of truth.
+
+--------------------------------------------------
+6. ENVIRONMENT BIBLE
+--------------------------------------------------
+
+Create reusable environments.
+
+Fields:
+
+name
+type
+location
+time_period
+architecture
+interior_description
+exterior_description
+lighting
+weather
+mood
+furniture
+important_props
+visual_style
+canonical_generation_prompt
+reference_image_url
+consistency_notes
+
+Example:
+
+Victor's Laboratory
+
+All later scenes in that environment should reference this environment record.
+
+--------------------------------------------------
+7. SCENE PLANNER
+--------------------------------------------------
+
+Break each chapter into visual scenes.
+
+Each scene should contain:
+
+scene_number
+scene_title
+chapter_id
+purpose
+summary
+narration
+characters_present
+environment_id
+visual_description
+camera_direction
+action
+mood
+estimated_duration
+importance
+educational_goal
+source_reference
+spoiler_level
+transition_in
+transition_out
+
+Do not generate image/video assets yet.
+
+This phase creates the blueprint only.
+
+--------------------------------------------------
+8. VISUAL STYLE BIBLE
+--------------------------------------------------
+
+Create one Visual Style Bible per visual edition.
+
+Include:
+
+overall visual tone
+cinematic style
+realism level
+era accuracy requirements
+camera style
+lens/style recommendations
+lighting philosophy
+aspect ratio
+character consistency rules
+environment consistency rules
+transition philosophy
+motion philosophy
+
+The goal is to make the entire visual edition look like one production.
+
+--------------------------------------------------
+9. NARRATION BIBLE
+--------------------------------------------------
+
+Create one Narration Bible.
+
+Include:
+
+narrator tone
+voice gender preference if applicable
+pace
+reading level
+dramatic intensity
+pronunciation notes
+whether dialogue should be narrated or dramatized
+how much original text may be quoted
+how summaries should be phrased
+how educational explanations should be handled
+
+--------------------------------------------------
+10. VALIDATION
+--------------------------------------------------
+
+All AI responses must use structured JSON.
+
+Validate outputs before saving.
+
+If validation fails:
+
+retry
+log failure
+do not save malformed data
+
+Store:
+
+provider
+model
+prompt_version
+input_token_estimate if available
+output_token_estimate if available
+cost if available
+created_at
+
+--------------------------------------------------
+11. ADMIN UI
+--------------------------------------------------
+
+Add an admin-only Book Intelligence page.
+
+Do not alter consumer UI.
+
+Admin should be able to open a book and see:
+
+Overview
+Chapters
+Characters
+Environments
+Scenes
+Visual Style
+Narration Style
+
+Admin controls:
+
+Analyze Book
+Reanalyze Chapter
+Regenerate Character Analysis
+Regenerate Environment Analysis
+Regenerate Scene Plan
+
+Never force a full-book reanalysis when only one section needs work.
+
+--------------------------------------------------
+12. TEST BOOK
+--------------------------------------------------
+
+Use Frankenstein by Mary Shelley as the primary test book.
+
+The goal of this phase is:
+
+Admin selects Frankenstein
+→ system analyzes it
+→ chapters appear
+→ characters appear
+→ environments appear
+→ scenes appear
+→ no expensive visual media is created yet
+
+SUCCESS CRITERIA
+
+This phase is complete when the application can produce a clean, structured visual-production blueprint for one full book without changing the existing user-facing experience.

@@ -11,6 +11,7 @@ Folio makes visual books as simple as search → book → chapters → play → 
 - Generation requires documented public-domain, owned, or explicitly licensed rights plus an editorial action.
 - Preserve scene versions. Replacements and rollback are manual editorial decisions, never automatic.
 - Future licensing is prepared through metadata. Author/publisher portals, royalty payments, mobile apps and complicated billing are out of scope.
+- This Book Intelligence phase is backend architecture only, plus an admin-only review page. Preserve the existing consumer frontend, player, navigation, styling, layout, and experience. Do not redesign or add social features.
 
 ## Run and operate
 
@@ -32,8 +33,12 @@ Folio makes visual books as simple as search → book → chapters → play → 
 ## Current limitations
 
 - Frankenstein has three short sample chapters: editorial illustrations with original explanatory narration, not a finished film or complete adaptation.
-- Text planning is a durable server-side queue that analyzes a limited Gutenberg excerpt. It is explicitly **not** a full-book analysis. Only the seeded source URLs are currently configured.
+- Book Intelligence ingests versioned full plain-text sources into private App Storage and checks SHA-256 integrity. Public-domain, platform-owned, licensed, and admin-entered sources require documented rights. Remote URLs are limited to HTTPS Gutenberg text; manuscripts are entered as plain text.
+- Full-source analysis is split into validated overview, chapter detection, per-chapter analysis, character/environment bibles, themes, story/learning structure, per-chapter scene plans, visual style and narration bibles. Jobs persist separately from media-generation jobs and retry failed output with bounded backoff. No source characters are dropped; large chapters become clearly labeled source segments.
+- Character extraction first saves a merged identity roster, then validates each detailed canonical character in its own job. Dependent structure/style/scene jobs wait for every character description. Runtime fields store seconds; provider rate limits use slower backoff instead of immediate repeated requests.
+- Each blueprint gets a separate unpublished visual edition. It never edits the published sample chapters, media, progress, or library. Canonical characters and environments retain stable IDs referenced by planned scenes. Previous stage outputs stay in job history.
+- The admin review page is `/admin/intelligence?bookId=1`. Targeted chapter, character, environment, and scene-plan revision avoids full-book reanalysis. Chapter revision also updates that chapter's scenes and flags unchanged edition-wide sections for manual review.
 - Runtime image, video and voice adapters are not connected. The provider interfaces are prepared, but the app cannot generate a full visual book yet.
 - Planning token usage is recorded. Actual provider billing remains unknown unless explicitly reported; do not present token-based estimates as actual charges.
 - Subscription metadata and settings are prepared; billing and subscriber access enforcement are not connected.
-- AI planning consumes credits only after an administrator queues it. Pause cannot undo a provider request already underway; completed results are retained for resume.
+- AI analysis consumes credits only after an explicit admin action (or the opt-in `intelligence-check.ts --full-book` verification script). The intelligence engine never invokes image, voice or video providers.

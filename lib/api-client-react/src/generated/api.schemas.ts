@@ -5,6 +5,94 @@
  * Folio visual book catalog and editorial API
  * OpenAPI spec version: 1.0.0
  */
+export type SourceInputSourceType = typeof SourceInputSourceType[keyof typeof SourceInputSourceType];
+
+
+export const SourceInputSourceType = {
+  public_domain: 'public_domain',
+  platform_owned: 'platform_owned',
+  licensed: 'licensed',
+  admin_entered: 'admin_entered',
+} as const;
+
+export type SourceInputRightsStatus = typeof SourceInputRightsStatus[keyof typeof SourceInputRightsStatus];
+
+
+export const SourceInputRightsStatus = {
+  public_domain: 'public_domain',
+  owned: 'owned',
+  licensed: 'licensed',
+} as const;
+
+export interface SourceInput {
+  sourceType: SourceInputSourceType;
+  rightsStatus: SourceInputRightsStatus;
+  /**
+     * @minLength 10
+     * @maxLength 5000
+     */
+  rightsNotes: string;
+  /** @maxLength 2000000 */
+  text?: string;
+  /** @maxLength 2000 */
+  sourceUrl?: string;
+}
+
+export type IntelligenceActionInputOperation = typeof IntelligenceActionInputOperation[keyof typeof IntelligenceActionInputOperation];
+
+
+export const IntelligenceActionInputOperation = {
+  analyze_book: 'analyze_book',
+  reanalyze_chapter: 'reanalyze_chapter',
+  regenerate_character: 'regenerate_character',
+  regenerate_environment: 'regenerate_environment',
+  regenerate_scenes: 'regenerate_scenes',
+  retry_failed: 'retry_failed',
+} as const;
+
+export interface IntelligenceActionInput {
+  operation: IntelligenceActionInputOperation;
+  sourceId?: number;
+  analysisId?: number;
+  targetId?: number;
+}
+
+export type IntelligenceStateSourcesItem = { [key: string]: unknown };
+
+export type IntelligenceStateAnalysesItem = { [key: string]: unknown };
+
+/**
+ * @nullable
+ */
+export type IntelligenceStateActiveAnalysis = { [key: string]: unknown } | null;
+
+export type IntelligenceStateSections = { [key: string]: unknown };
+
+export type IntelligenceStateChaptersItem = { [key: string]: unknown };
+
+export type IntelligenceStateCharactersItem = { [key: string]: unknown };
+
+export type IntelligenceStateEnvironmentsItem = { [key: string]: unknown };
+
+export type IntelligenceStateScenesItem = { [key: string]: unknown };
+
+export type IntelligenceStateJobsItem = { [key: string]: unknown };
+
+export interface IntelligenceState {
+  bookId: number;
+  title: string;
+  sources: IntelligenceStateSourcesItem[];
+  analyses: IntelligenceStateAnalysesItem[];
+  /** @nullable */
+  activeAnalysis: IntelligenceStateActiveAnalysis;
+  sections: IntelligenceStateSections;
+  chapters: IntelligenceStateChaptersItem[];
+  characters: IntelligenceStateCharactersItem[];
+  environments: IntelligenceStateEnvironmentsItem[];
+  scenes: IntelligenceStateScenesItem[];
+  jobs: IntelligenceStateJobsItem[];
+}
+
 export interface HealthStatus {
   status: string;
 }

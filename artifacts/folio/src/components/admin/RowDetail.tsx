@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
 import { useListBooks, getListBooksQueryKey, type AdminRow } from '@workspace/api-client-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAdminRun } from './useAdminRun';
@@ -29,6 +30,7 @@ export function RowDetail({ row, section, onClose }: { row: AdminRow | null; sec
           </DialogHeader>
           <div className="flex flex-wrap gap-2">
             {(section === 'books' || section === 'catalog' || section === 'rights') && <><button className="btn btn-sm" onClick={() => setEdit(true)} data-testid="button-edit-book">Edit book and rights</button><Act a="plan_book" text="Queue text planning" ok="Planning queued" quiet /></>}
+            {(section === 'books' || section === 'catalog') && <Link href={`/admin/intelligence?bookId=${row.id}`} className="btn btn-sm btn-quiet" data-testid="link-book-intelligence">Book intelligence</Link>}
             {section === 'requests' && <>
               {!row.data.bookId && <select className="box max-w-sm" value={matchedBook} onChange={e => setMatchedBook(e.target.value)} aria-label="Match requested title to catalog book"><option value="">Match to a catalog book</option>{books.data?.map(b => <option key={b.id} value={b.id}>{b.title} — {label(b.rightsStatus)}</option>)}</select>}
               <button className="btn btn-sm" disabled={pending || (!row.data.bookId && !matchedBook)} onClick={() => run('approve_request', row.id, 'Request approved', matchedBook ? { bookId: Number(matchedBook) } : undefined, onClose)}>Approve request</button>

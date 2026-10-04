@@ -1,6 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { startBookEngine } from "./services/book-engine";
+import { startIntelligenceEngine } from "./services/intelligence/worker";
 
 const rawPort = process.env["PORT"];
 
@@ -23,5 +23,5 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
-  startBookEngine();
+  startIntelligenceEngine();
 });

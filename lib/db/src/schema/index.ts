@@ -20,3 +20,4 @@
 export * from "./catalog";
 export * from "./readers";
 export * from "./editorial";
+export * from "./intelligence";

@@ -4,6 +4,7 @@ import { CreateBookBody,UpdateBookBody,AdminActionBody,CreateSceneVersionBody,Ge
 import { adminOnly,signedIn,readerId,parseId,fail } from "../services/access";
 import { adminData,adminOverview } from "../services/editorial";
 import { catalog,assertRights,validateLicense } from "../services/catalog";
+import { analyzeBook } from "../services/intelligence/queue";
 
 const router:IRouter=Router();
 router.use("/admin",signedIn,adminOnly);
@@ -67,6 +68,12 @@ router.post("/admin/scenes/:id/versions",async (req,res)=>{
 });
 router.post("/admin/actions",async (req,res)=>{
   const {action,id,settings}=AdminActionBody.parse(req.body);
+  if(action==="plan_book") {
+    const analysisId=await analyzeBook(id);
+    await pool.query("INSERT INTO editorial_audit(user_id,action,target_id,details)VALUES($1,'analyze_book',$2,$3)",[readerId(req),id,JSON.stringify({analysisId})]);
+    res.json(ok("Full-source Book Intelligence analysis queued. Open Book intelligence to review progress. No media is generated."));
+    return;
+  }
   const client=await pool.connect();
   try {
     await client.query("BEGIN");
@@ -100,20 +107,6 @@ router.post("/admin/actions",async (req,res)=>{
       if(!matchedId)fail(400,"Match this request to a catalog book with documented rights before approving");
       await assertRights(matchedId);
       await client.query("UPDATE book_requests SET status='approved',matched_book_id=$2 WHERE normalized_title=$1",[r.normalized_title,matchedId]);
-    } else if(action==="plan_book") {
-      const book=await assertRights(id);
-      if(!book.source_url)fail(400,"Approved source text URL required; initial planning supports the seeded Gutenberg sources.");
-      await client.query("SELECT id FROM books WHERE id=$1 FOR UPDATE",[id]);
-      const existing=(await client.query("SELECT id FROM generation_jobs WHERE book_id=$1 AND status IN('queued','processing','paused')",[id])).rows;
-      if(existing.length)fail(409,"A planning job already exists for this title");
-      const e=(await client.query("SELECT * FROM visual_editions WHERE book_id=$1 ORDER BY edition_number DESC LIMIT 1 FOR UPDATE",[id])).rows[0];
-      let eid=e?.id;
-      if(e?.published)fail(409,"A reusable published edition already exists. Revise individual scenes instead of regenerating it.");
-      const planned=await client.query("SELECT id FROM chapters WHERE visual_edition_id=$1 LIMIT 1",[eid]);
-      if(planned.rowCount)fail(409,"This edition already has a plan. Review its existing scenes.");
-      if(!eid)eid=(await client.query("INSERT INTO visual_editions(book_id,status) VALUES($1,'approved') RETURNING id",[id])).rows[0].id;
-      await client.query("INSERT INTO generation_jobs(book_id,visual_edition_id,job_type) VALUES($1,$2,'book_analysis')",[id,eid]);
-      await client.query("UPDATE visual_editions SET status='planning' WHERE id=$1",[eid]);
     } else if(["pause_job","resume_job","retry_job","cancel_job"].includes(action)) {
       const job=(await client.query("SELECT * FROM generation_jobs WHERE id=$1 FOR UPDATE",[id])).rows[0];if(!job)fail(404,"Job not found");
       const allowed:Record<string,string[]>={pause_job:["queued","processing"],resume_job:["paused"],retry_job:["failed"],cancel_job:["queued","processing","paused","failed"]};
@@ -136,6 +129,6 @@ router.post("/admin/actions",async (req,res)=>{
     await client.query("INSERT INTO editorial_audit(user_id,action,target_id,details) VALUES($1,$2,$3,$4)",[readerId(req),action,id,JSON.stringify(settings??{})]);
     await client.query("COMMIT");
   }catch(e){await client.query("ROLLBACK");throw e;}finally{client.release();}
-  res.json(ok(action==="plan_book"?"Planning queued. Analysis runs on the server and survives page refreshes. Actual AI charges are billed to your credits.":"Editorial changes saved"));
+  res.json(ok("Editorial changes saved"));
 });
 export default router;

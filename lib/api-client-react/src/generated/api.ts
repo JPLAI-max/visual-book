@@ -30,10 +30,13 @@ import type {
   FeedbackInput,
   HealthStatus,
   Home,
+  IntelligenceActionInput,
+  IntelligenceState,
   ListBooksParams,
   ProgressInput,
   Reader,
   RequestInput,
+  SourceInput,
   Success,
   VersionInput
 } from './api.schemas';
@@ -64,6 +67,243 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetBookIntelligenceUrl = (bookId: number,) => {
+
+
+
+
+  return `/api/admin/intelligence/books/${bookId}`
+}
+
+export const getBookIntelligence = async (bookId: number, options?: Parameters<typeof customFetch>[1]): Promise<IntelligenceState> => {
+
+  return customFetch<IntelligenceState>(getGetBookIntelligenceUrl(bookId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetBookIntelligenceQueryKey = (bookId: number,) => {
+    return [
+    `/api/admin/intelligence/books/${bookId}`
+    ] as const;
+    }
+
+
+export const getGetBookIntelligenceQueryOptions = <TData = Awaited<ReturnType<typeof getBookIntelligence>>, TError = ErrorType<unknown>>(bookId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBookIntelligence>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetBookIntelligenceQueryKey(bookId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBookIntelligence>>> = ({ signal }) => getBookIntelligence(bookId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: bookId !== null && bookId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBookIntelligence>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetBookIntelligenceQueryResult = NonNullable<Awaited<ReturnType<typeof getBookIntelligence>>>
+export type GetBookIntelligenceQueryError = ErrorType<unknown>
+
+
+
+export function useGetBookIntelligence<TData = Awaited<ReturnType<typeof getBookIntelligence>>, TError = ErrorType<unknown>>(
+ bookId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBookIntelligence>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetBookIntelligenceQueryOptions(bookId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getIngestBookSourceUrl = (bookId: number,) => {
+
+
+
+
+  return `/api/admin/intelligence/books/${bookId}/sources`
+}
+
+export const ingestBookSource = async (bookId: number,
+    sourceInput: SourceInput, options?: Parameters<typeof customFetch>[1]): Promise<Success> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Success>(getIngestBookSourceUrl(bookId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(sourceInput)
+  }
+);}
+
+
+
+
+
+export const getIngestBookSourceMutationKey = () => ['ingestBookSource'] as const;
+
+export const getIngestBookSourceMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof ingestBookSource>>, TError,IngestBookSourceMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof ingestBookSource>>, TError,IngestBookSourceMutationVariables, TContext> => {
+
+const mutationKey = getIngestBookSourceMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof ingestBookSource>>, IngestBookSourceMutationVariables> = (props) => {
+          const {bookId,data} = props ?? {};
+
+          return  ingestBookSource(bookId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type IngestBookSourceMutationResult = NonNullable<Awaited<ReturnType<typeof ingestBookSource>>>
+    export type IngestBookSourceMutationBody = BodyType<SourceInput>
+    export type IngestBookSourceMutationError = ErrorType<unknown>
+    export type IngestBookSourceMutationVariables = {bookId: number;data: BodyType<SourceInput>}
+
+    export const useIngestBookSource = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof ingestBookSource>>, TError,IngestBookSourceMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof ingestBookSource>>,
+        TError,
+        IngestBookSourceMutationVariables,
+        TContext
+      > => {
+      return useMutation(getIngestBookSourceMutationOptions(options));
+    }
+
+export const getRunIntelligenceActionUrl = (bookId: number,) => {
+
+
+
+
+  return `/api/admin/intelligence/books/${bookId}/actions`
+}
+
+export const runIntelligenceAction = async (bookId: number,
+    intelligenceActionInput: IntelligenceActionInput, options?: Parameters<typeof customFetch>[1]): Promise<Success> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Success>(getRunIntelligenceActionUrl(bookId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(intelligenceActionInput)
+  }
+);}
+
+
+
+
+
+export const getRunIntelligenceActionMutationKey = () => ['runIntelligenceAction'] as const;
+
+export const getRunIntelligenceActionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runIntelligenceAction>>, TError,RunIntelligenceActionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof runIntelligenceAction>>, TError,RunIntelligenceActionMutationVariables, TContext> => {
+
+const mutationKey = getRunIntelligenceActionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof runIntelligenceAction>>, RunIntelligenceActionMutationVariables> = (props) => {
+          const {bookId,data} = props ?? {};
+
+          return  runIntelligenceAction(bookId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RunIntelligenceActionMutationResult = NonNullable<Awaited<ReturnType<typeof runIntelligenceAction>>>
+    export type RunIntelligenceActionMutationBody = BodyType<IntelligenceActionInput>
+    export type RunIntelligenceActionMutationError = ErrorType<unknown>
+    export type RunIntelligenceActionMutationVariables = {bookId: number;data: BodyType<IntelligenceActionInput>}
+
+    export const useRunIntelligenceAction = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runIntelligenceAction>>, TError,RunIntelligenceActionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof runIntelligenceAction>>,
+        TError,
+        RunIntelligenceActionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRunIntelligenceActionMutationOptions(options));
+    }
 
 export const getHealthCheckUrl = () => {
 
