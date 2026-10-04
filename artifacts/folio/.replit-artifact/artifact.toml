@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Folio — Visual Books"
+description = "A quiet, search-first library of reusable visual book editions with chapter playback, saved progress, and a rights-aware editorial admin."
+version = "1.0.0"
+id = "artifacts/folio"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23981
+
+[services.development]
+run = "pnpm --filter @workspace/folio run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/folio", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/folio/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23981"
+BASE_PATH = "/"

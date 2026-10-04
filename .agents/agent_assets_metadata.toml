@@ -1,0 +1,44 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "cB7Oyups8MYfHNTr9O-vB"
+uri = "file://attached_assets/narration/scene-1.mp3"
+type = "audio"
+title = "Frankenstein sample scene 1"
+description = "Text-to-speech audio: At the edge of the known world, Robert Walton searches for a passage through the Arctic. His letters to his sister reveal more than ambition: he longs for a friend who understan…"
+
+[[outputs]]
+id = "oYpK5Nnm4cM4dNJpyhrOQ"
+uri = "file://attached_assets/narration/scene-2.mp3"
+type = "audio"
+title = "Frankenstein sample scene 2"
+description = "Text-to-speech audio: Walton wants discovery and glory. Victor recognizes the same dangerous hunger in him. Rather than celebrating his achievements, Victor offers a warning: knowledge can become des…"
+
+[[outputs]]
+id = "psbZl4mTyf_vQRUYf39zh"
+uri = "file://attached_assets/narration/scene-5.mp3"
+type = "audio"
+title = "Frankenstein sample scene 5"
+description = "Text-to-speech audio: At the university in Ingolstadt, Victor finds teachers who encourage his scientific promise. Chemistry and anatomy offer methods where older books offered dreams. He throws hims…"
+
+[[outputs]]
+id = "3sMIfzffr7OHcHx1ozxbt"
+uri = "file://attached_assets/narration/scene-3.mp3"
+type = "audio"
+title = "Frankenstein sample scene 3"
+description = "Text-to-speech audio: Victor grows up in Geneva, surrounded by affection and the beauty of the mountains. Elizabeth and Henry Clerval represent the relationships that give his life meaning. Yet Victo…"
+
+[[outputs]]
+id = "BEyA8-zgyTYrtRRWygzLs"
+uri = "file://attached_assets/narration/scene-4.mp3"
+type = "audio"
+title = "Frankenstein sample scene 4"
+description = "Text-to-speech audio: A lightning strike destroys a tree and awakens Victor's fascination with electricity. His interest moves from ancient speculation toward modern science. But his deepest desire r…"
+
+[[outputs]]
+id = "TvVgPdSvoE9bmIGyvM6Xt"
+uri = "file://attached_assets/narration/scene-6.mp3"
+type = "audio"
+title = "Frankenstein sample scene 6"
+description = "Text-to-speech audio: Victor discovers a way to animate lifeless matter. He works in secret, collecting materials and assembling a body on a scale larger than an ordinary human. He imagines a new bei…"

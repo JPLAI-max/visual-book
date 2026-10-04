@@ -1,45 +1,39 @@
-# [Project name]
+# Folio — Visual Books
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Folio makes visual books as simple as search → book → chapters → play → stop → resume.
 
-## Run & Operate
+## Product scope and standing requirements
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Keep the reader experience quiet and Kindle-simple. Exact search placeholder: **What book do you want to see?**
+- No social feed, autoplay banners, noisy carousels, gaming aesthetics, or futuristic gradients.
+- Start with public-domain Frankenstein and clearly labeled sample media, not expensive full-book generation.
+- Editions are generated once and reused. Searching or requesting a title must never start paid generation.
+- Generation requires documented public-domain, owned, or explicitly licensed rights plus an editorial action.
+- Preserve scene versions. Replacements and rollback are manual editorial decisions, never automatic.
+- Future licensing is prepared through metadata. Author/publisher portals, royalty payments, mobile apps and complicated billing are out of scope.
 
-## Stack
+## Run and operate
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: `pnpm --filter @workspace/folio run dev`.
+- Backend: `pnpm --filter @workspace/api-server run dev`.
+- Full typecheck: `pnpm run typecheck`.
+- API regeneration: `pnpm --filter @workspace/api-spec run codegen`.
+- Development schema changes: `pnpm --filter @workspace/db run push`.
+- Initial sample seed: `pnpm --filter @workspace/scripts exec tsx ../artifacts/api-server/src/scripts/seed.ts`. Requires the six narration files under `attached_assets/narration` and configured App Storage. Does not overwrite an existing catalog.
+- Authentication uses Replit-managed Clerk. **There is no first-signup-admin shortcut.** An administrator must have `publicMetadata.role: "admin"` in Clerk, or a user ID explicitly included in the server's `ADMIN_USER_IDS` environment variable.
 
-## Where things live
+## Stack and source of truth
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- React/Vite frontend under `artifacts/folio`.
+- Express 5 backend under `artifacts/api-server`; PostgreSQL/Drizzle schema under `lib/db`.
+- API contracts in `lib/api-spec/openapi.yaml`, with generated clients and Zod validation.
+- Narration and captions live in App Storage; the database stores asset references, not media bytes.
 
-## Architecture decisions
+## Current limitations
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Frankenstein has three short sample chapters: editorial illustrations with original explanatory narration, not a finished film or complete adaptation.
+- Text planning is a durable server-side queue that analyzes a limited Gutenberg excerpt. It is explicitly **not** a full-book analysis. Only the seeded source URLs are currently configured.
+- Runtime image, video and voice adapters are not connected. The provider interfaces are prepared, but the app cannot generate a full visual book yet.
+- Planning token usage is recorded. Actual provider billing remains unknown unless explicitly reported; do not present token-based estimates as actual charges.
+- Subscription metadata and settings are prepared; billing and subscriber access enforcement are not connected.
+- AI planning consumes credits only after an administrator queues it. Pause cannot undo a provider request already underway; completed results are retained for resume.

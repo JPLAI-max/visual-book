@@ -1,36 +1,406 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: 1.0.0
+  description: Folio visual book catalog and editorial API
 servers:
   - url: /api
-    description: Base API path
-tags:
-  - name: health
-    description: Health operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
-      tags: [health]
-      summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+  /books:
+    get:
+      operationId: listBooks
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+        - { name: genre, in: query, schema: { type: string } }
+      responses:
+        "200":
+          description: Catalog
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Book" } }
+  /books/{id}:
+    get:
+      operationId: getBook
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Book with chapters and scenes
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookDetail" }
+  /home:
+    get:
+      operationId: getHome
+      responses:
+        "200":
+          description: Reader home
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Home" }
+  /me:
+    get:
+      operationId: getMe
+      responses:
+        "200":
+          description: Auth state
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Reader" }
+  /library:
+    get:
+      operationId: getLibrary
+      responses:
+        "200":
+          description: Saved books
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Book" } }
+  /library/{bookId}:
+    post:
+      operationId: saveLibraryBook
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+    delete:
+      operationId: removeLibraryBook
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Removed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /progress:
+    post:
+      operationId: saveProgress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProgressInput" }
+      responses:
+        "200":
+          description: Saved position
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /requests:
+    post:
+      operationId: requestBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RequestInput" }
+      responses:
+        "200":
+          description: Demand recorded, never starts generation
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /feedback:
+    post:
+      operationId: submitFeedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FeedbackInput" }
+      responses:
+        "200":
+          description: Feedback recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /events:
+    post:
+      operationId: recordViewEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EventInput" }
+      responses:
+        "200":
+          description: Event recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /admin/overview:
+    get:
+      operationId: getAdminOverview
+      responses:
+        "200":
+          description: Actual catalog, demand and engagement aggregates
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdminOverview" }
+  /admin/data/{section}:
+    get:
+      operationId: getAdminData
+      parameters:
+        - { name: section, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Editorial rows (books, editions, chapters, scenes, characters, environments, requests, jobs, feedback, analytics, rights, costs, providers, settings)
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/AdminRow" } }
+  /admin/books:
+    post:
+      operationId: createBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookInput" }
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Book" }
+  /admin/books/{id}:
+    patch:
+      operationId: updateBook
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookInput" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Book" }
+  /admin/actions:
+    post:
+      operationId: adminAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AdminActionInput" }
+      responses:
+        "200":
+          description: Editorial action
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /admin/scenes/{id}/versions:
+    post:
+      operationId: createSceneVersion
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VersionInput" }
+      responses:
+        "200":
+          description: New draft (does not replace current version)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        status: { type: string }
+    Success:
+      type: object
+      required: [success, message]
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+    Reader:
+      type: object
+      required: [authenticated, admin, subscription]
+      properties:
+        authenticated: { type: boolean }
+        admin: { type: boolean }
+        subscription: { type: string }
+        displayName: { type: string }
+    Book:
+      type: object
+      required: [id, title, author, description, genre, rightsStatus, status, coverImage, duration, chapterCount, year, sample]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        subtitle: { type: string }
+        author: { type: string }
+        description: { type: string }
+        genre: { type: string }
+        rightsStatus: { type: string }
+        rightsNotes: { type: string }
+        status: { type: string }
+        coverImage: { type: string }
+        duration: { type: number }
+        chapterCount: { type: integer }
+        year: { type: integer }
+        isbn: { type: string }
+        sample: { type: boolean }
+        editionId: { type: integer }
+        version: { type: string }
+        saved: { type: boolean }
+        progress: { $ref: "#/components/schemas/Progress" }
+    Progress:
+      type: object
+      required: [chapterId, position, percentage, chapterTitle, completedChapters]
+      properties:
+        chapterId: { type: integer }
+        chapterTitle: { type: string }
+        position: { type: number }
+        percentage: { type: number }
+        completedChapters: { type: array, items: { type: integer } }
+    BookDetail:
+      type: object
+      required: [book, chapters]
+      properties:
+        book: { $ref: "#/components/schemas/Book" }
+        chapters: { type: array, items: { $ref: "#/components/schemas/Chapter" } }
+    Chapter:
+      type: object
+      required: [id, title, number, summary, duration, status, scenes]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        number: { type: integer }
+        summary: { type: string }
+        duration: { type: number }
+        status: { type: string }
+        scenes: { type: array, items: { $ref: "#/components/schemas/Scene" } }
+    Scene:
+      type: object
+      required: [id, title, number, narration, duration, imageUrl, videoUrl, audioUrl, captionUrl, version, purpose]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        number: { type: integer }
+        narration: { type: string }
+        duration: { type: number }
+        imageUrl: { type: string }
+        videoUrl: { type: string }
+        audioUrl: { type: string }
+        captionUrl: { type: string }
+        version: { type: integer }
+        purpose: { type: string }
+    Home:
+      type: object
+      required: [recent, continuing, library]
+      properties:
+        recent: { type: array, items: { $ref: "#/components/schemas/Book" } }
+        continuing: { type: array, items: { $ref: "#/components/schemas/Book" } }
+        library: { type: array, items: { $ref: "#/components/schemas/Book" } }
+    ProgressInput:
+      type: object
+      required: [bookId, chapterId, position]
+      properties:
+        bookId: { type: integer }
+        chapterId: { type: integer }
+        position: { type: number, minimum: 0 }
+        completed: { type: boolean }
+    RequestInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        author: { type: string, maxLength: 200 }
+        bookId: { type: integer }
+    FeedbackInput:
+      type: object
+      required: [bookId, rating]
+      properties:
+        bookId: { type: integer }
+        chapterId: { type: integer }
+        sceneId: { type: integer }
+        rating: { type: integer, enum: [-1, 1] }
+        feedbackType: { type: string }
+        comment: { type: string, maxLength: 2000 }
+    EventInput:
+      type: object
+      required: [bookId, chapterId, eventType, position]
+      properties:
+        bookId: { type: integer }
+        chapterId: { type: integer }
+        sceneId: { type: integer }
+        eventType: { type: string, enum: [scene_started, scene_completed, scene_skipped, scene_replayed, rewind, exit, chapter_completed, book_completed, speed_changed, watch] }
+        position: { type: number, minimum: 0 }
+        watchSeconds: { type: number, minimum: 0, maximum: 30 }
+    AdminOverview:
+      type: object
+      required: [totalBooks, publishedEditions, generating, requested, viewers, watchHours, completionRate, generationSpend, averageCost, mostWatched, mostRequested, revisions]
+      properties:
+        totalBooks: { type: integer }
+        publishedEditions: { type: integer }
+        generating: { type: integer }
+        requested: { type: integer }
+        viewers: { type: integer }
+        watchHours: { type: number }
+        completionRate: { type: number }
+        generationSpend: { type: number }
+        averageCost: { type: number }
+        mostWatched: { type: array, items: { $ref: "#/components/schemas/AdminRow" } }
+        mostRequested: { type: array, items: { $ref: "#/components/schemas/AdminRow" } }
+        revisions: { type: array, items: { $ref: "#/components/schemas/AdminRow" } }
+    AdminRow:
+      type: object
+      required: [id, title, status, data]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        status: { type: string }
+        subtitle: { type: string }
+        data: { type: object, additionalProperties: true }
+    BookInput:
+      type: object
+      required: [title, author, description, genre, rightsStatus]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        author: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, maxLength: 5000 }
+        genre: { type: string }
+        rightsStatus: { type: string, enum: [public_domain, owned, licensed, pending_license, unlicensed, unknown] }
+        rightsNotes: { type: string }
+        year: { type: integer }
+        coverImage: { type: string }
+        license: { type: object, additionalProperties: true }
+    AdminActionInput:
+      type: object
+      required: [action, id]
+      properties:
+        action: { type: string, enum: [approve_request, plan_book, pause_job, resume_job, retry_job, cancel_job, publish_edition, publish_version, rollback_version, archive_edition, save_settings] }
+        id: { type: integer }
+        settings: { type: object, additionalProperties: true }
+    VersionInput:
+      type: object
+      required: [narration, imageUrl, videoUrl, audioUrl, captionUrl]
+      properties:
+        narration: { type: string, minLength: 1 }
+        imageUrl: { type: string }
+        videoUrl: { type: string }
+        audioUrl: { type: string }
+        captionUrl: { type: string }
+        notes: { type: string }
