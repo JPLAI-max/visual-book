@@ -5,6 +5,121 @@
  * Folio visual book catalog and editorial API
  * OpenAPI spec version: 1.0.0
  */
+export interface ProductionRecord { [key: string]: unknown }
+
+/**
+ * @nullable
+ */
+export type ProductionStateActiveProduction = { [key: string]: unknown } | null;
+
+export interface ProductionState {
+  bookId: number;
+  title: string;
+  candidates: ProductionRecord[];
+  productions: ProductionRecord[];
+  /** @nullable */
+  activeProduction: ProductionStateActiveProduction;
+  scenes: ProductionRecord[];
+  references: ProductionRecord[];
+  jobs: ProductionRecord[];
+  renders: ProductionRecord[];
+  configuration: ProductionRecord;
+  assets?: ProductionRecord[];
+  requests?: ProductionRecord[];
+}
+
+export type ProductionInputOperation = typeof ProductionInputOperation[keyof typeof ProductionInputOperation];
+
+
+export const ProductionInputOperation = {
+  start_chapter: 'start_chapter',
+  approve_reference: 'approve_reference',
+  reject_reference: 'reject_reference',
+  regenerate_reference: 'regenerate_reference',
+  regenerate_image: 'regenerate_image',
+  regenerate_video: 'regenerate_video',
+  regenerate_voice: 'regenerate_voice',
+  edit_prompt: 'edit_prompt',
+  approve_image: 'approve_image',
+  approve: 'approve',
+  reject: 'reject',
+  set_current: 'set_current',
+  assemble: 'assemble',
+  publish: 'publish',
+  retry_job: 'retry_job',
+  configure: 'configure',
+  upgrade_ai_video: 'upgrade_ai_video',
+} as const;
+
+export type ProductionInputMotionType = typeof ProductionInputMotionType[keyof typeof ProductionInputMotionType];
+
+
+export const ProductionInputMotionType = {
+  STATIC: 'STATIC',
+  PAN_ZOOM: 'PAN_ZOOM',
+  PARALLAX: 'PARALLAX',
+  AI_VIDEO: 'AI_VIDEO',
+} as const;
+
+export type ProductionInputVoiceId = typeof ProductionInputVoiceId[keyof typeof ProductionInputVoiceId];
+
+
+export const ProductionInputVoiceId = {
+  alloy: 'alloy',
+  ash: 'ash',
+  ballad: 'ballad',
+  coral: 'coral',
+  echo: 'echo',
+  sage: 'sage',
+  shimmer: 'shimmer',
+  verse: 'verse',
+} as const;
+
+export type ProductionInputResolution = typeof ProductionInputResolution[keyof typeof ProductionInputResolution];
+
+
+export const ProductionInputResolution = {
+  '720p': '720p',
+  '1080p': '1080p',
+} as const;
+
+export interface ProductionInput {
+  operation: ProductionInputOperation;
+  chapterId?: number;
+  productionId?: number;
+  sceneId?: number;
+  versionId?: number;
+  referenceId?: number;
+  jobId?: number;
+  motionType?: ProductionInputMotionType;
+  /** @maxLength 12000 */
+  prompt?: string;
+  /** @maxLength 2000 */
+  negativePrompt?: string;
+  /**
+     * @minimum 1
+     * @maximum 500
+     */
+  maxSpend?: number;
+  /**
+     * @minimum 0.05
+     * @maximum 100
+     */
+  jobMaxSpend?: number;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  qualityThreshold?: number;
+  /**
+     * @minimum 0
+     * @maximum 2
+     */
+  maxRetries?: number;
+  voiceId?: ProductionInputVoiceId;
+  resolution?: ProductionInputResolution;
+}
+
 export type SourceInputSourceType = typeof SourceInputSourceType[keyof typeof SourceInputSourceType];
 
 

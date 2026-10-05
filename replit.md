@@ -14,6 +14,9 @@ Folio makes visual books as simple as search → book → chapters → play → 
 - Preserve the existing consumer frontend, player, navigation, styling, layout, and experience exactly. Do not redesign or add social features. New production review controls belong in the admin interface only.
 - The media-production phase uses the saved Book Intelligence scene plan. Generate one Frankenstein chapter first, not the whole book. Use canonical references, a book-consistent narrator, reviewed scene versions, and separately stored compiled chapter renders. Keep individual scene assets and previous versions when replacing a scene.
 - The first Frankenstein production test uses 1080p widescreen video and a USD 10 chapter generation budget covering references, scene images, motion, narration, and quality checks.
+- V1 uses controlled pans/zooms over approved illustrations. AI_VIDEO is optional, never a dependency for completing the chapter. Do not fake character animation or add unnatural movement merely to make an image move. PARALLAX requires real, approved separate layers.
+- Local motion and assembled chapters use VP9/Opus WebM for compatibility with browsers that lack proprietary H.264/AAC codecs. Existing MP4 versions are retained. The player continues to consume standard video URLs without UI changes.
+- Generation limits enforce configured conservative per-call reservations, including failed/uncertain calls. Distinguish these estimates from actual billing; retain unknown actual costs as NULL rather than implying a zero charge.
 
 ## Run and operate
 

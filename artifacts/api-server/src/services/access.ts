@@ -36,7 +36,7 @@ export async function validateContext(bookId: number, chapterId?: number, sceneI
     LEFT JOIN visual_editions e ON e.book_id=b.id AND e.published=true
     LEFT JOIN chapters c ON c.visual_edition_id=e.id AND ($2::int IS NULL OR c.id=$2)
     LEFT JOIN scenes s ON s.chapter_id=c.id AND ($3::int IS NULL OR s.id=$3)
-    WHERE b.id=$1`, [bookId, chapterId ?? null, sceneId ?? null]);
+    WHERE b.id=$1 AND ($2::int IS NULL OR c.id IS NOT NULL) AND ($3::int IS NULL OR s.id IS NOT NULL)`, [bookId, chapterId ?? null, sceneId ?? null]);
   if (!rows.length) fail(404, "Book not found");
   if (chapterId && !rows[0].chapter_id) fail(400, "Chapter does not belong to this published edition");
   if (sceneId && !rows[0].scene_id) fail(400, "Scene does not belong to this chapter");

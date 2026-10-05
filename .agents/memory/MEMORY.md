@@ -1,1 +1,3 @@
 - [Analysis provider budgets](analysis-provider-budgets.md) — completion limits include reasoning; bound canonical jobs and state runtime units explicitly.
+- [Media reference grounding](media-reference-grounding.md) — valid canonical IDs can still imply the wrong location or life stage; review source semantics before paid generation.
+- [Browser video codecs](browser-video-codecs.md) — valid MP4 can fail in a browser without H.264/AAC; check canPlayType before changing media delivery.

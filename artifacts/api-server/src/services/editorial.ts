@@ -1,4 +1,5 @@
 import { pool } from "@workspace/db";
+import { productionConfig } from "./production/config";
 import { sceneAnalytics } from "./improvement";
 import { fail } from "./access";
 
@@ -71,9 +72,13 @@ export async function adminData(section:string):Promise<EditorialRow[]> {
     }
     case "costs": {
       const {rows}=await pool.query(`SELECT b.id,b.title,
-        COALESCE(sum(j.cost),0)::float actual_cost,COALESCE(sum(j.estimated_cost),0)::float estimated_cost,
-        count(j.id)::int jobs,count(j.id) FILTER(WHERE j.cost IS NULL)::int unknown_cost_jobs
-        FROM books b LEFT JOIN generation_jobs j ON j.book_id=b.id GROUP BY b.id ORDER BY b.id`);
+        CASE WHEN COALESCE(j.unknown,0)+COALESCE(m.unknown,0)>0 THEN NULL ELSE COALESCE(j.actual,0)+COALESCE(m.actual,0) END actual_cost,
+        (COALESCE(j.estimate,0)+COALESCE(m.estimate,0))::float estimated_cost,
+        (COALESCE(j.jobs,0)+COALESCE(m.jobs,0))::int jobs,(COALESCE(j.unknown,0)+COALESCE(m.unknown,0))::int unknown_cost_jobs
+        FROM books b
+        LEFT JOIN LATERAL(SELECT sum(cost) actual,sum(estimated_cost) estimate,count(*) jobs,count(*)FILTER(WHERE cost IS NULL) unknown FROM generation_jobs WHERE book_id=b.id)j ON true
+        LEFT JOIN LATERAL(SELECT sum(r.actual_cost) actual,sum(r.estimated_cost) estimate,count(*) jobs,count(*)FILTER(WHERE r.actual_cost IS NULL) unknown
+          FROM media_production_requests r JOIN media_productions p ON p.id=r.production_id WHERE p.book_id=b.id)m ON true ORDER BY b.id`);
       return rows.map(r=>({id:r.id,title:r.title,status:r.unknown_cost_jobs?"cost_unconfirmed":"recorded",data:{
         actualCost:r.actual_cost,estimatedCost:r.estimated_cost,totalJobs:r.jobs,costUnconfirmedJobs:r.unknown_cost_jobs,
         note:"Actual provider billing is not inferred from token counts. Sample assets have no recorded runtime generation spend.",
@@ -81,10 +86,11 @@ export async function adminData(section:string):Promise<EditorialRow[]> {
     }
     case "providers": {
       const s=(await pool.query("SELECT value FROM settings WHERE key='providers'")).rows[0]?.value??{};
+      const media=await productionConfig();
       return [{id:1,title:"Text analysis",status:"configured",data:{provider:s.textProvider??"openai",model:s.textModel??"gpt-5.4-mini",...s}},
-        {id:2,title:"Image generation",status:"not_connected",data:{provider:s.imageProvider??"not_configured"}},
-        {id:3,title:"Video generation",status:"not_connected",data:{provider:s.videoProvider??"not_configured"}},
-        {id:4,title:"Voice generation",status:"sample_only",data:{provider:s.voiceProvider??"not_configured",note:"Pre-generated AI narration is available. Runtime adapter is not connected."}}];
+        {id:2,title:"Image generation",status:"configured",data:{provider:media.imageProvider,model:media.imageModel,quality:media.imageQuality}},
+        {id:3,title:"Video generation",status:"controlled_motion",data:{provider:media.motionProvider,aiVideoAvailable:media.aiVideoAvailable,note:"V1 uses restrained camera pans and zooms. AI video is optional and never a prerequisite."}},
+        {id:4,title:"Voice generation",status:"configured",data:{provider:media.voiceProvider,model:media.voiceModel,voiceId:media.voiceId,note:"Narrator identity is locked book-wide after the first narration request."}}];
     }
     case "settings": {
       const {rows}=await pool.query("SELECT * FROM settings ORDER BY id");

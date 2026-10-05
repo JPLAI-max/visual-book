@@ -8,6 +8,79 @@
 import * as zod from 'zod';
 
 
+export const GetBookProductionParams = zod.object({
+  "bookId": zod.coerce.number().int()
+})
+
+export const GetBookProductionResponse = zod.object({
+  "bookId": zod.number().int(),
+  "title": zod.string(),
+  "candidates": zod.array(zod.record(zod.string(), zod.unknown())),
+  "productions": zod.array(zod.record(zod.string(), zod.unknown())),
+  "activeProduction": zod.record(zod.string(), zod.unknown()).nullable(),
+  "scenes": zod.array(zod.record(zod.string(), zod.unknown())),
+  "references": zod.array(zod.record(zod.string(), zod.unknown())),
+  "jobs": zod.array(zod.record(zod.string(), zod.unknown())),
+  "renders": zod.array(zod.record(zod.string(), zod.unknown())),
+  "configuration": zod.record(zod.string(), zod.unknown()),
+  "assets": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "requests": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+})
+
+
+export const RunProductionActionParams = zod.object({
+  "bookId": zod.coerce.number().int()
+})
+
+export const runProductionActionBodyPromptMax = 12000;
+
+export const runProductionActionBodyNegativePromptMax = 2000;
+
+export const runProductionActionBodyMaxSpendMax = 500;
+
+export const runProductionActionBodyJobMaxSpendMin = 0.05;
+export const runProductionActionBodyJobMaxSpendMax = 100;
+
+export const runProductionActionBodyQualityThresholdMin = 0;
+export const runProductionActionBodyQualityThresholdMax = 100;
+
+export const runProductionActionBodyMaxRetriesMin = 0;
+export const runProductionActionBodyMaxRetriesMax = 2;
+
+
+
+export const RunProductionActionBody = zod.object({
+  "operation": zod.enum(['start_chapter', 'approve_reference', 'reject_reference', 'regenerate_reference', 'regenerate_image', 'regenerate_video', 'regenerate_voice', 'edit_prompt', 'approve_image', 'approve', 'reject', 'set_current', 'assemble', 'publish', 'retry_job', 'configure', 'upgrade_ai_video']),
+  "chapterId": zod.number().int().optional(),
+  "productionId": zod.number().int().optional(),
+  "sceneId": zod.number().int().optional(),
+  "versionId": zod.number().int().optional(),
+  "referenceId": zod.number().int().optional(),
+  "jobId": zod.number().int().optional(),
+  "motionType": zod.enum(['STATIC', 'PAN_ZOOM', 'PARALLAX', 'AI_VIDEO']).optional(),
+  "prompt": zod.string().max(runProductionActionBodyPromptMax).optional(),
+  "negativePrompt": zod.string().max(runProductionActionBodyNegativePromptMax).optional(),
+  "maxSpend": zod.number().min(1).max(runProductionActionBodyMaxSpendMax).optional(),
+  "jobMaxSpend": zod.number().min(runProductionActionBodyJobMaxSpendMin).max(runProductionActionBodyJobMaxSpendMax).optional(),
+  "qualityThreshold": zod.number().min(runProductionActionBodyQualityThresholdMin).max(runProductionActionBodyQualityThresholdMax).optional(),
+  "maxRetries": zod.number().int().min(runProductionActionBodyMaxRetriesMin).max(runProductionActionBodyMaxRetriesMax).optional(),
+  "voiceId": zod.enum(['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse']).optional(),
+  "resolution": zod.enum(['720p', '1080p']).optional()
+})
+
+export const RunProductionActionResponse = zod.object({
+  "success": zod.boolean(),
+  "message": zod.string()
+})
+
+
+export const GetProductionMediaParams = zod.object({
+  "assetId": zod.coerce.number().int()
+})
+
+export const GetProductionMediaResponse = zod.unknown()
+
+
 export const GetBookIntelligenceParams = zod.object({
   "bookId": zod.coerce.number().int()
 })

@@ -6,6 +6,40 @@ info:
 servers:
   - url: /api
 paths:
+  /admin/production/books/{bookId}:
+    get:
+      operationId: getBookProduction
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Chapter production, canonical references, immutable takes, jobs and renders
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProductionState" }
+  /admin/production/books/{bookId}/actions:
+    post:
+      operationId: runProductionAction
+      parameters:
+        - { name: bookId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductionInput" }
+      responses:
+        "200":
+          description: Explicit editorial operation completed or queued
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Success" }
+  /production/media/{assetId}:
+    get:
+      operationId: getProductionMedia
+      parameters:
+        - { name: assetId, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200": { description: Authorized production media bytes }
   /admin/intelligence/books/{bookId}:
     get:
       operationId: getBookIntelligence
@@ -267,6 +301,51 @@ paths:
               schema: { $ref: "#/components/schemas/Success" }
 components:
   schemas:
+    ProductionRecord:
+      type: object
+      additionalProperties: true
+    ProductionState:
+      type: object
+      required: [bookId, title, candidates, productions, activeProduction, scenes, references, jobs, renders, configuration]
+      properties:
+        bookId: { type: integer }
+        title: { type: string }
+        candidates: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+        productions: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+        activeProduction: { type: [object, "null"], additionalProperties: true }
+        scenes: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+        references: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+        jobs: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+        renders: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+        configuration: { $ref: "#/components/schemas/ProductionRecord" }
+        assets:
+          type: array
+          items: { $ref: "#/components/schemas/ProductionRecord" }
+        requests:
+          type: array
+          items: { $ref: "#/components/schemas/ProductionRecord" }
+    ProductionInput:
+      type: object
+      required: [operation]
+      properties:
+        operation:
+          type: string
+          enum: [start_chapter, approve_reference, reject_reference, regenerate_reference, regenerate_image, regenerate_video, regenerate_voice, edit_prompt, approve_image, approve, reject, set_current, assemble, publish, retry_job, configure, upgrade_ai_video]
+        chapterId: { type: integer }
+        productionId: { type: integer }
+        sceneId: { type: integer }
+        versionId: { type: integer }
+        referenceId: { type: integer }
+        jobId: { type: integer }
+        motionType: { type: string, enum: [STATIC, PAN_ZOOM, PARALLAX, AI_VIDEO] }
+        prompt: { type: string, maxLength: 12000 }
+        negativePrompt: { type: string, maxLength: 2000 }
+        maxSpend: { type: number, minimum: 1, maximum: 500 }
+        jobMaxSpend: { type: number, minimum: 0.05, maximum: 100 }
+        qualityThreshold: { type: number, minimum: 0, maximum: 100 }
+        maxRetries: { type: integer, minimum: 0, maximum: 2 }
+        voiceId: { type: string, enum: [alloy, ash, ballad, coral, echo, sage, shimmer, verse] }
+        resolution: { type: string, enum: [720p, 1080p] }
     SourceInput:
       type: object
       required: [sourceType, rightsStatus, rightsNotes]

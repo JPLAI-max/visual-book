@@ -33,6 +33,8 @@ import type {
   IntelligenceActionInput,
   IntelligenceState,
   ListBooksParams,
+  ProductionInput,
+  ProductionState,
   ProgressInput,
   Reader,
   RequestInput,
@@ -67,6 +69,231 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetBookProductionUrl = (bookId: number,) => {
+
+
+
+
+  return `/api/admin/production/books/${bookId}`
+}
+
+export const getBookProduction = async (bookId: number, options?: Parameters<typeof customFetch>[1]): Promise<ProductionState> => {
+
+  return customFetch<ProductionState>(getGetBookProductionUrl(bookId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetBookProductionQueryKey = (bookId: number,) => {
+    return [
+    `/api/admin/production/books/${bookId}`
+    ] as const;
+    }
+
+
+export const getGetBookProductionQueryOptions = <TData = Awaited<ReturnType<typeof getBookProduction>>, TError = ErrorType<unknown>>(bookId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBookProduction>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetBookProductionQueryKey(bookId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBookProduction>>> = ({ signal }) => getBookProduction(bookId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: bookId !== null && bookId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBookProduction>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetBookProductionQueryResult = NonNullable<Awaited<ReturnType<typeof getBookProduction>>>
+export type GetBookProductionQueryError = ErrorType<unknown>
+
+
+
+export function useGetBookProduction<TData = Awaited<ReturnType<typeof getBookProduction>>, TError = ErrorType<unknown>>(
+ bookId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBookProduction>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetBookProductionQueryOptions(bookId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getRunProductionActionUrl = (bookId: number,) => {
+
+
+
+
+  return `/api/admin/production/books/${bookId}/actions`
+}
+
+export const runProductionAction = async (bookId: number,
+    productionInput: ProductionInput, options?: Parameters<typeof customFetch>[1]): Promise<Success> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Success>(getRunProductionActionUrl(bookId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(productionInput)
+  }
+);}
+
+
+
+
+
+export const getRunProductionActionMutationKey = () => ['runProductionAction'] as const;
+
+export const getRunProductionActionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runProductionAction>>, TError,RunProductionActionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof runProductionAction>>, TError,RunProductionActionMutationVariables, TContext> => {
+
+const mutationKey = getRunProductionActionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof runProductionAction>>, RunProductionActionMutationVariables> = (props) => {
+          const {bookId,data} = props ?? {};
+
+          return  runProductionAction(bookId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RunProductionActionMutationResult = NonNullable<Awaited<ReturnType<typeof runProductionAction>>>
+    export type RunProductionActionMutationBody = BodyType<ProductionInput>
+    export type RunProductionActionMutationError = ErrorType<unknown>
+    export type RunProductionActionMutationVariables = {bookId: number;data: BodyType<ProductionInput>}
+
+    export const useRunProductionAction = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runProductionAction>>, TError,RunProductionActionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof runProductionAction>>,
+        TError,
+        RunProductionActionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRunProductionActionMutationOptions(options));
+    }
+
+export const getGetProductionMediaUrl = (assetId: number,) => {
+
+
+
+
+  return `/api/production/media/${assetId}`
+}
+
+export const getProductionMedia = async (assetId: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getGetProductionMediaUrl(assetId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProductionMediaQueryKey = (assetId: number,) => {
+    return [
+    `/api/production/media/${assetId}`
+    ] as const;
+    }
+
+
+export const getGetProductionMediaQueryOptions = <TData = Awaited<ReturnType<typeof getProductionMedia>>, TError = ErrorType<unknown>>(assetId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProductionMedia>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProductionMediaQueryKey(assetId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProductionMedia>>> = ({ signal }) => getProductionMedia(assetId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: assetId !== null && assetId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProductionMedia>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProductionMediaQueryResult = NonNullable<Awaited<ReturnType<typeof getProductionMedia>>>
+export type GetProductionMediaQueryError = ErrorType<unknown>
+
+
+
+export function useGetProductionMedia<TData = Awaited<ReturnType<typeof getProductionMedia>>, TError = ErrorType<unknown>>(
+ assetId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProductionMedia>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProductionMediaQueryOptions(assetId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getGetBookIntelligenceUrl = (bookId: number,) => {
 
