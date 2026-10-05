@@ -13,6 +13,7 @@ Folio makes visual books as simple as search → book → chapters → play → 
 - Future licensing is prepared through metadata. Author/publisher portals, royalty payments, mobile apps and complicated billing are out of scope.
 - Preserve the existing consumer frontend, player, navigation, styling, layout, and experience exactly. Do not redesign or add social features. New production review controls belong in the admin interface only.
 - The media-production phase uses the saved Book Intelligence scene plan. Generate one Frankenstein chapter first, not the whole book. Use canonical references, a book-consistent narrator, reviewed scene versions, and separately stored compiled chapter renders. Keep individual scene assets and previous versions when replacing a scene.
+- The first Frankenstein production test uses 1080p widescreen video and a USD 10 chapter generation budget covering references, scene images, motion, narration, and quality checks.
 
 ## Run and operate
 
