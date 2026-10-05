@@ -253,7 +253,7 @@ export function Player({ book, chapter, chapters, authed }: { book: Book; chapte
           <div className="relative">
             <input type="range" className="scrub" min={0} max={total} step={0.5} value={pos} onChange={(e) => seek(Number(e.target.value))} aria-label="Seek" data-testid="input-scrub" />
           </div>
-          <div className="mt-2 flex items-center gap-1">
+          <div className="relative mt-2 flex items-center gap-1">
             {prev ? <Link href={`/watch/${book.id}/${prev.id}`} className={ib} aria-label="Previous chapter" data-testid="link-prev-chapter"><ChevronLeft className="h-5 w-5" /></Link> : <span className={`${ib} opacity-30`}><ChevronLeft className="h-5 w-5" /></span>}
             <button className={ib} onClick={() => setPlay(!playing)} aria-label={playing ? 'Pause' : 'Play'} data-testid="button-play">{playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</button>
             {next ? <Link href={`/watch/${book.id}/${next.id}`} className={ib} aria-label="Next chapter" data-testid="link-next-chapter"><ChevronRight className="h-5 w-5" /></Link> : <span className={`${ib} opacity-30`}><ChevronRight className="h-5 w-5" /></span>}

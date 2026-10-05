@@ -37,13 +37,13 @@ Folio makes visual books as simple as search → book → chapters → play → 
 
 ## Current limitations
 
-- Frankenstein has three short sample chapters: editorial illustrations with original explanatory narration, not a finished film or complete adaptation.
+- Frankenstein retains its original three sample chapters and now has a separately published, reviewed 1080p production chapter: four scenes totaling 109.5 seconds. This is not a full-book adaptation.
 - Book Intelligence ingests versioned full plain-text sources into private App Storage and checks SHA-256 integrity. Public-domain, platform-owned, licensed, and admin-entered sources require documented rights. Remote URLs are limited to HTTPS Gutenberg text; manuscripts are entered as plain text.
 - Full-source analysis is split into validated overview, chapter detection, per-chapter analysis, character/environment bibles, themes, story/learning structure, per-chapter scene plans, visual style and narration bibles. Jobs persist separately from media-generation jobs and retry failed output with bounded backoff. No source characters are dropped; large chapters become clearly labeled source segments.
 - Character extraction first saves a merged identity roster, then validates each detailed canonical character in its own job. Dependent structure/style/scene jobs wait for every character description. Runtime fields store seconds; provider rate limits use slower backoff instead of immediate repeated requests.
 - Each blueprint gets a separate unpublished visual edition. It never edits the published sample chapters, media, progress, or library. Canonical characters and environments retain stable IDs referenced by planned scenes. Previous stage outputs stay in job history.
 - The admin review page is `/admin/intelligence?bookId=1`. Targeted chapter, character, environment, and scene-plan revision avoids full-book reanalysis. Chapter revision also updates that chapter's scenes and flags unchanged edition-wide sections for manual review.
-- Runtime image, video and voice adapters are not connected. The provider interfaces are prepared, but the app cannot generate a full visual book yet.
+- Image, narration, and image-quality adapters are connected. Local controlled camera motion and chapter assembly use ffmpeg. AI_VIDEO remains optional and unconnected; full-book generation has not been attempted.
 - Planning token usage is recorded. Actual provider billing remains unknown unless explicitly reported; do not present token-based estimates as actual charges.
 - Subscription metadata and settings are prepared; billing and subscriber access enforcement are not connected.
 - AI analysis consumes credits only after an explicit admin action (or the opt-in `intelligence-check.ts --full-book` verification script). The intelligence engine never invokes image, voice or video providers.
