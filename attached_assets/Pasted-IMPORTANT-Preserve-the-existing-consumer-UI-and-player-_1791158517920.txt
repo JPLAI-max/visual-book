@@ -1,0 +1,315 @@
+IMPORTANT: Preserve the existing consumer UI and player exactly as they are.
+
+DO NOT redesign the interface.
+
+This phase connects AI media generation to the Book Intelligence Engine.
+
+GOAL
+
+Take the structured scene plan already created and generate a consistent visual chapter.
+
+Do NOT attempt a full book first.
+
+Generate one chapter at production quality.
+
+--------------------------------------------------
+1. PROVIDER ARCHITECTURE
+--------------------------------------------------
+
+Create provider adapters.
+
+Do not hard-code the app to one company.
+
+Create interfaces for:
+
+generateImage()
+editImage()
+generateVideo()
+generateVoice()
+generateCaptions()
+
+Provider configuration should come from environment variables/admin settings.
+
+All API calls must happen server-side.
+
+Never expose API keys to the client.
+
+--------------------------------------------------
+2. REFERENCE-FIRST IMAGE GENERATION
+--------------------------------------------------
+
+Before generating scenes, create canonical reference assets.
+
+Generate:
+
+character reference images
+environment reference images
+important prop references if needed
+
+These reference assets become the visual source of truth.
+
+Every later scene should use the appropriate character/environment references whenever supported by the provider.
+
+The goal is visual continuity.
+
+--------------------------------------------------
+3. SCENE IMAGE GENERATION
+--------------------------------------------------
+
+For each scene:
+
+pull canonical character data
+pull canonical environment data
+pull Visual Style Bible
+pull scene action
+pull camera direction
+pull mood
+
+Then assemble the final scene-generation prompt.
+
+Store the final prompt used.
+
+Generate at least one primary scene image.
+
+Support alternate takes.
+
+Data fields:
+
+scene_id
+prompt
+negative_prompt if supported
+reference_assets
+provider
+model
+seed if supported
+generation_cost
+status
+asset_url
+created_at
+
+--------------------------------------------------
+4. CONSISTENCY CHECK
+--------------------------------------------------
+
+After an image is generated, run a quality/consistency evaluation.
+
+Evaluate:
+
+correct characters
+correct apparent age
+correct wardrobe
+correct environment
+correct time period
+visual continuity
+missing objects
+obvious generation errors
+source accuracy
+
+Return a quality score.
+
+If below configurable threshold:
+
+flag for retry or manual review.
+
+Do not endlessly regenerate automatically.
+
+Set a maximum retry limit.
+
+--------------------------------------------------
+5. VIDEO / MOTION
+--------------------------------------------------
+
+Use the approved scene image as the basis for motion whenever possible.
+
+Prefer image-to-video over generating unrelated video from scratch because continuity matters.
+
+Each scene should have controlled motion.
+
+Examples:
+
+slow push in
+subtle camera pan
+character turns
+walking
+environment movement
+fire flicker
+rain
+wind
+small gestures
+
+Avoid excessive random AI motion.
+
+The goal is cinematic visual storytelling, not chaotic generation.
+
+Store:
+
+source_image
+motion_prompt
+video_provider
+video_model
+duration
+cost
+video_url
+quality_score
+
+--------------------------------------------------
+6. NARRATION
+--------------------------------------------------
+
+Generate narration from the approved scene narration.
+
+Use the Narration Bible.
+
+Narrator voice must remain consistent across the entire book.
+
+Store:
+
+voice_provider
+voice_id
+model
+audio_url
+duration
+cost
+
+Do not generate a different narrator for each chapter.
+
+--------------------------------------------------
+7. TIMING
+--------------------------------------------------
+
+Synchronize:
+
+scene video
+narration
+captions
+
+If narration is longer than the generated scene motion:
+
+allow techniques such as:
+
+extended still frame
+subtle motion loop
+secondary establishing shot
+cutaway
+slow zoom
+
+Do not unnaturally speed narration just to match video.
+
+--------------------------------------------------
+8. CAPTIONS
+--------------------------------------------------
+
+Generate caption timing.
+
+Player should support captions on/off.
+
+Store standard caption files such as VTT or equivalent.
+
+--------------------------------------------------
+9. CHAPTER ASSEMBLY
+--------------------------------------------------
+
+Create a chapter assembly service.
+
+It should combine scene assets in sequence.
+
+Do not destroy the individual scene assets after chapter assembly.
+
+Final hierarchy remains:
+
+Chapter
+→ Scene 1
+→ Scene 2
+→ Scene 3
+
+The chapter media is a compiled playback version.
+
+Store the chapter render separately.
+
+--------------------------------------------------
+10. SCENE REPLACEMENT
+--------------------------------------------------
+
+Critical requirement:
+
+Admin must be able to replace one scene without rebuilding the entire chapter from scratch.
+
+Workflow:
+
+Open chapter
+Select Scene 7
+Generate new image/video
+Approve version
+Reassemble chapter
+
+Keep previous version.
+
+--------------------------------------------------
+11. ADMIN REVIEW
+--------------------------------------------------
+
+Create a visual review interface for admin.
+
+Show scenes as cards or timeline items.
+
+Each scene should show:
+
+thumbnail
+scene number
+narration
+duration
+quality score
+status
+cost
+current version
+
+Controls:
+
+Preview
+Regenerate Image
+Regenerate Video
+Regenerate Voice
+Edit Prompt
+Approve
+Reject
+Set Current Version
+
+--------------------------------------------------
+12. COST CONTROL
+--------------------------------------------------
+
+Before expensive generation, show estimated cost if possible.
+
+Track actual cost per:
+
+image
+video
+voice
+scene
+chapter
+
+Set configurable maximum spend per generation job.
+
+If provider errors repeatedly, stop and flag job.
+
+--------------------------------------------------
+13. FIRST PRODUCTION TEST
+--------------------------------------------------
+
+Generate ONE chapter of Frankenstein.
+
+Do not generate the whole book yet.
+
+The finished chapter should:
+
+play inside the existing player
+have consistent characters
+have coherent environments
+have narration
+have captions
+have controlled cinematic motion
+feel like one visual production rather than unrelated AI clips
+
+SUCCESS CRITERIA
+
+Phase is successful when one complete chapter can be generated, reviewed, published into the existing player, watched, stopped, and resumed.

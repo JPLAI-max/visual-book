@@ -11,7 +11,8 @@ Folio makes visual books as simple as search → book → chapters → play → 
 - Generation requires documented public-domain, owned, or explicitly licensed rights plus an editorial action.
 - Preserve scene versions. Replacements and rollback are manual editorial decisions, never automatic.
 - Future licensing is prepared through metadata. Author/publisher portals, royalty payments, mobile apps and complicated billing are out of scope.
-- This Book Intelligence phase is backend architecture only, plus an admin-only review page. Preserve the existing consumer frontend, player, navigation, styling, layout, and experience. Do not redesign or add social features.
+- Preserve the existing consumer frontend, player, navigation, styling, layout, and experience exactly. Do not redesign or add social features. New production review controls belong in the admin interface only.
+- The media-production phase uses the saved Book Intelligence scene plan. Generate one Frankenstein chapter first, not the whole book. Use canonical references, a book-consistent narrator, reviewed scene versions, and separately stored compiled chapter renders. Keep individual scene assets and previous versions when replacing a scene.
 
 ## Run and operate
 
