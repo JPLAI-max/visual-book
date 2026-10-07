@@ -5,6 +5,51 @@
  * Folio visual book catalog and editorial API
  * OpenAPI spec version: 1.0.0
  */
+export type EditorEnvelopeData = { [key: string]: unknown };
+
+export interface EditorEnvelope {
+  data: EditorEnvelopeData;
+}
+
+export type EditorInputScenesItem = { [key: string]: unknown };
+
+export interface EditorInput {
+  /** @minimum 0 */
+  revision: number;
+  scenes?: EditorInputScenesItem[];
+  renderId?: number;
+}
+
+export type AskInputMode = typeof AskInputMode[keyof typeof AskInputMode];
+
+
+export const AskInputMode = {
+  objective: 'objective',
+} as const;
+
+export interface AskInput {
+  bookId: number;
+  chapterId: number;
+  sceneId: number;
+  /** @minimum 0 */
+  timestamp: number;
+  /**
+     * @minLength 1
+     * @maxLength 600
+     */
+  question: string;
+  conversationId?: string;
+  retainHistory?: boolean;
+  mode?: AskInputMode;
+}
+
+export interface AskAnswer {
+  answer: string;
+  conversationId: string;
+  topic: string;
+  citations: string[];
+}
+
 export interface ProductionRecord { [key: string]: unknown }
 
 /**
@@ -450,6 +495,10 @@ export interface VersionInput {
   captionUrl: string;
   notes?: string;
 }
+
+export type GetQuestionHistoryParams = {
+bookId: number;
+};
 
 export type ListBooksParams = {
 q?: string;

@@ -1,0 +1,472 @@
+Preserve the existing clean frontend and player.
+
+This phase adds two major systems:
+
+1. A chapter-level visual editor
+2. An in-player Ask AI question bubble
+
+Do not redesign the consumer experience.
+
+--------------------------------------------------
+PART 1 — CHAPTER VIDEO EDITOR
+--------------------------------------------------
+
+GOAL
+
+Create an internal editor that lets the platform assemble a chapter from:
+
+- generated images
+- AI video clips later
+- narration
+- captions
+- transitions
+- camera motion
+- scene timing
+- music later if needed
+
+The editor should feel like a simplified video timeline, but it is admin-only.
+
+Do not build Premiere Pro.
+
+Keep it purpose-built for visual books.
+
+--------------------------------------------------
+1. TIMELINE STRUCTURE
+--------------------------------------------------
+
+Each chapter should have a timeline.
+
+Structure:
+
+Chapter
+→ Scene
+→ Shot
+→ Visual Asset
+→ Audio
+→ Captions
+
+A scene may contain multiple shots.
+
+Example:
+
+Scene 6
+
+Shot 1
+Establishing image
+5 seconds
+
+Shot 2
+Victor close-up
+7 seconds
+
+Shot 3
+Laboratory detail
+6 seconds
+
+Narration runs across the scene.
+
+This prevents the experience from feeling like one static image per scene.
+
+--------------------------------------------------
+2. TIMELINE TRACKS
+--------------------------------------------------
+
+Create tracks for:
+
+VISUAL
+NARRATION
+CAPTIONS
+MUSIC — future
+SFX — future
+
+The Visual track must support:
+
+IMAGE
+PAN_ZOOM
+PARALLAX
+AI_VIDEO
+
+The editor should display thumbnails across the timeline.
+
+--------------------------------------------------
+3. SHOT CONTROLS
+--------------------------------------------------
+
+For each shot allow:
+
+duration
+start time
+end time
+crop
+zoom start
+zoom end
+pan direction
+transition in
+transition out
+asset replacement
+motion type
+playback preview
+
+Motion presets:
+
+Slow Push In
+Slow Pull Out
+Pan Left
+Pan Right
+Pan Up
+Pan Down
+Static
+Parallax
+
+Keep movement subtle.
+
+--------------------------------------------------
+4. MULTIPLE SHOTS PER SCENE
+--------------------------------------------------
+
+Allow the generation engine or admin to create multiple images per scene.
+
+This is important.
+
+For a 20-second narration segment, do not necessarily hold one picture for 20 seconds.
+
+Example:
+
+0–6 sec
+Wide environment shot
+
+6–13 sec
+Character medium shot
+
+13–20 sec
+Detail/reaction shot
+
+The Book Engine should eventually be able to recommend shot changes automatically.
+
+--------------------------------------------------
+5. AUTO-ASSEMBLY
+--------------------------------------------------
+
+Build an Auto Assemble Chapter function.
+
+It should:
+
+read scene duration
+read narration duration
+select approved visual assets
+place them on timeline
+assign default movement
+assign transitions
+align captions
+create chapter playback sequence
+
+Admin can then edit the result.
+
+--------------------------------------------------
+6. PREVIEW
+--------------------------------------------------
+
+Admin should be able to preview:
+
+single shot
+scene
+full chapter
+
+Changes should not require regenerating the underlying image.
+
+Example:
+
+Changing:
+
+zoom
+duration
+pan
+transition
+
+should only alter playback instructions.
+
+--------------------------------------------------
+7. NON-DESTRUCTIVE EDITING
+--------------------------------------------------
+
+Do not permanently alter source media.
+
+Store editor decisions as metadata.
+
+Example:
+
+shot_asset_id
+start_time
+duration
+crop
+motion_type
+motion_parameters
+transition
+
+The original generated image remains untouched.
+
+--------------------------------------------------
+8. FUTURE AI VIDEO SUPPORT
+--------------------------------------------------
+
+AI-generated video must plug into the same timeline.
+
+Example:
+
+Current:
+
+Shot 3
+motion_type = PAN_ZOOM
+asset = image_123
+
+Future:
+
+Shot 3
+motion_type = AI_VIDEO
+asset = video_456
+
+Nothing else in the chapter architecture should need to change.
+
+--------------------------------------------------
+9. CHAPTER RENDERING
+--------------------------------------------------
+
+Support two playback approaches:
+
+A. Dynamic playback using timeline metadata
+B. Pre-rendered chapter media
+
+Architect for both.
+
+For V1, use whichever is more reliable in the existing stack.
+
+Do not delete the scene/shot structure after rendering.
+
+--------------------------------------------------
+PART 2 — ASK AI
+--------------------------------------------------
+
+Add a subtle question bubble inside the player.
+
+The goal:
+
+A viewer should be able to pause at any point and ask a question about what they are seeing or learning.
+
+Example questions:
+
+"Why did Victor do that?"
+
+"Who is Walton again?"
+
+"What does this symbolize?"
+
+"Explain this in simpler terms."
+
+"Why is this scene important?"
+
+"What happened before this?"
+
+"Is this historically accurate?"
+
+--------------------------------------------------
+10. QUESTION BUTTON
+--------------------------------------------------
+
+Add a small floating button:
+
+Ask
+
+or
+
+?
+
+Keep it visually subtle.
+
+Do not cover important video controls.
+
+When selected, open a compact question panel.
+
+--------------------------------------------------
+11. CONTEXT-AWARE AI
+--------------------------------------------------
+
+The AI must know the viewer's current context.
+
+Send:
+
+book
+visual edition
+chapter
+scene
+current playback timestamp
+scene narration
+scene summary
+characters present
+relevant chapter context
+prior chapter context where needed
+
+The user should not need to explain where they are.
+
+If the viewer asks:
+
+"Why is he upset?"
+
+the system should know who "he" refers to based on the current scene.
+
+--------------------------------------------------
+12. SOURCE BOUNDARIES
+--------------------------------------------------
+
+Answers should primarily use:
+
+book analysis
+chapter data
+scene data
+approved source material
+approved educational/context data
+
+Do not hallucinate details.
+
+If the answer is uncertain, say so.
+
+For copyrighted works later, respect the rights architecture and do not return large verbatim excerpts.
+
+--------------------------------------------------
+13. PAUSE BEHAVIOR
+--------------------------------------------------
+
+When the Ask panel opens:
+
+pause playback automatically.
+
+After the user receives the answer, show:
+
+Resume
+
+The user can return directly to where they stopped.
+
+--------------------------------------------------
+14. FOLLOW-UP QUESTIONS
+--------------------------------------------------
+
+Allow short contextual follow-up conversation.
+
+Example:
+
+User:
+"Why did Victor leave?"
+
+AI:
+explains
+
+User:
+"Was that in the original book?"
+
+AI should understand the second question refers to the same scene/topic.
+
+Keep the session tied to:
+
+user
+book
+chapter
+scene
+
+--------------------------------------------------
+15. QUESTION HISTORY
+--------------------------------------------------
+
+Optionally store the user's questions for that book.
+
+Allow:
+
+My Questions
+
+This can later become a study feature.
+
+Do not make this prominent in V1.
+
+--------------------------------------------------
+16. QUESTION ANALYTICS
+--------------------------------------------------
+
+Aggregate questions anonymously for content improvement.
+
+This is very important.
+
+If hundreds of users ask:
+
+"Why did this happen?"
+
+during the same scene, flag the scene as potentially unclear.
+
+Track:
+
+scene_id
+question_count
+common_question_topic
+timestamp_cluster
+
+Feed this information into the Improvement Engine.
+
+Questions therefore serve two purposes:
+
+1. Help the viewer immediately.
+2. Help improve the visual edition.
+
+--------------------------------------------------
+17. FUTURE FEATURE — ASK THE CHARACTER
+--------------------------------------------------
+
+Do not build this yet, but architect so later we could support:
+
+Ask the narrator
+Ask the author
+Ask a character
+Ask a teacher/expert
+
+For now:
+
+Ask AI
+
+should answer objectively based on the book and current context.
+
+--------------------------------------------------
+18. CONSUMER EXPERIENCE
+--------------------------------------------------
+
+The viewer experience should remain:
+
+Watch
+Pause
+Ask
+Understand
+Resume
+
+Do not turn the player into a chat application.
+
+The visual book remains the primary experience.
+
+--------------------------------------------------
+SUCCESS CRITERIA
+--------------------------------------------------
+
+This phase is successful when:
+
+- one chapter can contain multiple visual shots
+- images can move using cinematic pans/zooms
+- narration and captions align with the timeline
+- admin can reorder and adjust shots
+- AI video can later replace an individual image shot
+- user can pause during playback
+- user can ask a contextual question
+- AI understands exactly where the viewer is
+- playback resumes from the same position
+- repeated questions can identify confusing scenes
+
+CORE PRINCIPLE
+
+The editor improves the visual experience.
+
+Ask AI improves understanding.
+
+Neither should make the app feel more complicated.

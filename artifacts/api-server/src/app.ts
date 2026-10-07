@@ -30,6 +30,7 @@ app.use(
 );
 app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
 app.use("/api/admin/intelligence",express.json({limit:"3mb"}));
+app.use("/api/admin/timeline",express.json({limit:"1mb"}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware((req) => ({

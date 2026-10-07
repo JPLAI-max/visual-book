@@ -8,6 +8,136 @@
 import * as zod from 'zod';
 
 
+export const ListEditorChaptersResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const GetChapterTimelineParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const GetChapterTimelineResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const SaveChapterTimelineParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const saveChapterTimelineBodyRevisionMin = 0;
+
+
+
+export const SaveChapterTimelineBody = zod.object({
+  "revision": zod.number().int().min(saveChapterTimelineBodyRevisionMin),
+  "scenes": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "renderId": zod.number().int().optional()
+})
+
+export const SaveChapterTimelineResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const AutoAssembleChapterParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const autoAssembleChapterBodyRevisionMin = 0;
+
+
+
+export const AutoAssembleChapterBody = zod.object({
+  "revision": zod.number().int().min(autoAssembleChapterBodyRevisionMin),
+  "scenes": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "renderId": zod.number().int().optional()
+})
+
+export const AutoAssembleChapterResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const RenderChapterTimelineParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const renderChapterTimelineBodyRevisionMin = 0;
+
+
+
+export const RenderChapterTimelineBody = zod.object({
+  "revision": zod.number().int().min(renderChapterTimelineBodyRevisionMin),
+  "scenes": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "renderId": zod.number().int().optional()
+})
+
+export const RenderChapterTimelineResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const PublishChapterTimelineParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const publishChapterTimelineBodyRevisionMin = 0;
+
+
+
+export const PublishChapterTimelineBody = zod.object({
+  "revision": zod.number().int().min(publishChapterTimelineBodyRevisionMin),
+  "scenes": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "renderId": zod.number().int().optional()
+})
+
+export const PublishChapterTimelineResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const askBookQuestionBodyTimestampMin = 0;
+
+export const askBookQuestionBodyQuestionMax = 600;
+
+export const askBookQuestionBodyRetainHistoryDefault = false;
+export const askBookQuestionBodyModeDefault = `objective`;
+
+export const AskBookQuestionBody = zod.object({
+  "bookId": zod.number().int(),
+  "chapterId": zod.number().int(),
+  "sceneId": zod.number().int(),
+  "timestamp": zod.number().min(askBookQuestionBodyTimestampMin),
+  "question": zod.string().min(1).max(askBookQuestionBodyQuestionMax),
+  "conversationId": zod.string().optional(),
+  "retainHistory": zod.boolean().default(askBookQuestionBodyRetainHistoryDefault),
+  "mode": zod.enum(['objective']).default(askBookQuestionBodyModeDefault)
+})
+
+export const AskBookQuestionResponse = zod.object({
+  "answer": zod.string(),
+  "conversationId": zod.string(),
+  "topic": zod.string(),
+  "citations": zod.array(zod.string())
+})
+
+
+export const GetQuestionHistoryQueryParams = zod.object({
+  "bookId": zod.coerce.number().int()
+})
+
+export const GetQuestionHistoryResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const GetQuestionInsightsResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
 export const GetBookProductionParams = zod.object({
   "bookId": zod.coerce.number().int()
 })

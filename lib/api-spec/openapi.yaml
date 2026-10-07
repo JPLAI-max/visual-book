@@ -6,6 +6,121 @@ info:
 servers:
   - url: /api
 paths:
+  /admin/timeline/chapters:
+    get:
+      operationId: listEditorChapters
+      responses:
+        "200":
+          description: Editable generated chapters
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+  /admin/timeline/chapters/{chapterId}:
+    parameters:
+      - { name: chapterId, in: path, required: true, schema: { type: integer } }
+    get:
+      operationId: getChapterTimeline
+      responses:
+        "200":
+          description: Non-destructive timeline, approved assets and render history
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+    put:
+      operationId: saveChapterTimeline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EditorInput" }
+      responses:
+        "200":
+          description: Saved revision
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+  /admin/timeline/chapters/{chapterId}/auto-assemble:
+    post:
+      operationId: autoAssembleChapter
+      parameters:
+        - { name: chapterId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EditorInput" }
+      responses:
+        "200":
+          description: Auto assembled draft with approved visuals, narration and captions
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+  /admin/timeline/chapters/{chapterId}/render:
+    post:
+      operationId: renderChapterTimeline
+      parameters:
+        - { name: chapterId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EditorInput" }
+      responses:
+        "200":
+          description: Durable local render queued without image regeneration
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+  /admin/timeline/chapters/{chapterId}/publish:
+    post:
+      operationId: publishChapterTimeline
+      parameters:
+        - { name: chapterId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EditorInput" }
+      responses:
+        "200":
+          description: Reviewed render published with original media and versions retained
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+  /ask:
+    post:
+      operationId: askBookQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AskInput" }
+      responses:
+        "200":
+          description: Grounded contextual answer
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AskAnswer" }
+  /ask/history:
+    get:
+      operationId: getQuestionHistory
+      parameters:
+        - { name: bookId, in: query, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Only the current viewer's opted-in questions
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+  /admin/questions:
+    get:
+      operationId: getQuestionInsights
+      responses:
+        "200":
+          description: Anonymous question topics and potentially unclear scene clusters
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
   /admin/production/books/{bookId}:
     get:
       operationId: getBookProduction
@@ -301,6 +416,38 @@ paths:
               schema: { $ref: "#/components/schemas/Success" }
 components:
   schemas:
+    EditorEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { type: object, additionalProperties: true }
+    EditorInput:
+      type: object
+      required: [revision]
+      properties:
+        revision: { type: integer, minimum: 0 }
+        scenes: { type: array, items: { type: object, additionalProperties: true } }
+        renderId: { type: integer }
+    AskInput:
+      type: object
+      required: [bookId, chapterId, sceneId, timestamp, question]
+      properties:
+        bookId: { type: integer }
+        chapterId: { type: integer }
+        sceneId: { type: integer }
+        timestamp: { type: number, minimum: 0 }
+        question: { type: string, minLength: 1, maxLength: 600 }
+        conversationId: { type: string }
+        retainHistory: { type: boolean, default: false }
+        mode: { type: string, enum: [objective], default: objective }
+    AskAnswer:
+      type: object
+      required: [answer, conversationId, citations, topic]
+      properties:
+        answer: { type: string }
+        conversationId: { type: string }
+        topic: { type: string }
+        citations: { type: array, items: { type: string } }
     ProductionRecord:
       type: object
       additionalProperties: true

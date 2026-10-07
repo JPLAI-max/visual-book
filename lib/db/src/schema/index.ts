@@ -18,6 +18,7 @@
 //   export type Post = typeof postsTable.$inferSelect;
 
 export * from "./catalog";
+export * from "./editor";
 export * from "./readers";
 export * from "./editorial";
 export * from "./intelligence";

@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRecordViewEvent, useSaveProgress, type Book, type Chapter, type EventInput } from '@workspace/api-client-react';
 import { SignInPrompt } from '@/components/SignInPrompt';
 import { FeedbackDialog } from './FeedbackDialog';
+import { AskPanel } from './AskPanel';
 import { clock, label } from '@/lib/format';
 
 const SPEEDS = [0.75, 1, 1.25, 1.5];
@@ -78,7 +79,9 @@ export function Player({ book, chapter, chapters, authed }: { book: Book; chapte
   }, [total, flush, save, sendEvent, chapters, chapter.id, qc]);
   const finishRef = useRef(finish); finishRef.current = finish;
 
+  const askLock = useRef(false);
   const setPlay = (v: boolean) => {
+    if (v && askLock.current) return;
     if (v && ended) { setEnded(false); setPosition(0); }
     touched.current = true;
     if (v && startedSceneRef.current !== sceneIdRef.current) {
@@ -221,6 +224,7 @@ export function Player({ book, chapter, chapters, authed }: { book: Book; chapte
           <img key={scene.id} src={scene.imageUrl} alt={scene.title} className={`kb fade absolute inset-0 h-full w-full object-cover`} style={{ animationPlayState: playing ? 'running' : 'paused', animationDuration: `${Math.max(scene.duration, 20) * 1.4}s` }} />
         )}
         <button className="absolute inset-0 h-full w-full" onClick={() => setPlay(!playing)} aria-label={playing ? 'Pause' : 'Play'} data-testid="button-stage" />
+        <AskPanel bookId={book.id} chapterId={chapter.id} sceneId={scene.id} position={pos} visible={show && !ended} shifted={list} setPlay={setPlay} seekTo={(p) => seek(p)} onOpenChange={(o) => { askLock.current = o; }} />
         {!playing && !ended && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center fade">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[hsl(40_33%_94%/.92)] text-[hsl(24_22%_12%)]"><Play className="ml-1 h-7 w-7" /></div>

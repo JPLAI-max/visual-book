@@ -23,11 +23,16 @@ import type {
   AdminActionInput,
   AdminOverview,
   AdminRow,
+  AskAnswer,
+  AskInput,
   Book,
   BookDetail,
   BookInput,
+  EditorEnvelope,
+  EditorInput,
   EventInput,
   FeedbackInput,
+  GetQuestionHistoryParams,
   HealthStatus,
   Home,
   IntelligenceActionInput,
@@ -69,6 +74,711 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getListEditorChaptersUrl = () => {
+
+
+
+
+  return `/api/admin/timeline/chapters`
+}
+
+export const listEditorChapters = async ( options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+  return customFetch<EditorEnvelope>(getListEditorChaptersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListEditorChaptersQueryKey = () => {
+    return [
+    `/api/admin/timeline/chapters`
+    ] as const;
+    }
+
+
+export const getListEditorChaptersQueryOptions = <TData = Awaited<ReturnType<typeof listEditorChapters>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEditorChapters>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListEditorChaptersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listEditorChapters>>> = ({ signal }) => listEditorChapters({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEditorChapters>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListEditorChaptersQueryResult = NonNullable<Awaited<ReturnType<typeof listEditorChapters>>>
+export type ListEditorChaptersQueryError = ErrorType<unknown>
+
+
+
+export function useListEditorChapters<TData = Awaited<ReturnType<typeof listEditorChapters>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEditorChapters>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListEditorChaptersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetChapterTimelineUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/timeline/chapters/${chapterId}`
+}
+
+export const getChapterTimeline = async (chapterId: number, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+  return customFetch<EditorEnvelope>(getGetChapterTimelineUrl(chapterId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetChapterTimelineQueryKey = (chapterId: number,) => {
+    return [
+    `/api/admin/timeline/chapters/${chapterId}`
+    ] as const;
+    }
+
+
+export const getGetChapterTimelineQueryOptions = <TData = Awaited<ReturnType<typeof getChapterTimeline>>, TError = ErrorType<unknown>>(chapterId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChapterTimeline>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChapterTimelineQueryKey(chapterId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChapterTimeline>>> = ({ signal }) => getChapterTimeline(chapterId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: chapterId !== null && chapterId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChapterTimeline>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetChapterTimelineQueryResult = NonNullable<Awaited<ReturnType<typeof getChapterTimeline>>>
+export type GetChapterTimelineQueryError = ErrorType<unknown>
+
+
+
+export function useGetChapterTimeline<TData = Awaited<ReturnType<typeof getChapterTimeline>>, TError = ErrorType<unknown>>(
+ chapterId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChapterTimeline>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetChapterTimelineQueryOptions(chapterId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveChapterTimelineUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/timeline/chapters/${chapterId}`
+}
+
+export const saveChapterTimeline = async (chapterId: number,
+    editorInput: EditorInput, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EditorEnvelope>(getSaveChapterTimelineUrl(chapterId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(editorInput)
+  }
+);}
+
+
+
+
+
+export const getSaveChapterTimelineMutationKey = () => ['saveChapterTimeline'] as const;
+
+export const getSaveChapterTimelineMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveChapterTimeline>>, TError,SaveChapterTimelineMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveChapterTimeline>>, TError,SaveChapterTimelineMutationVariables, TContext> => {
+
+const mutationKey = getSaveChapterTimelineMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveChapterTimeline>>, SaveChapterTimelineMutationVariables> = (props) => {
+          const {chapterId,data} = props ?? {};
+
+          return  saveChapterTimeline(chapterId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveChapterTimelineMutationResult = NonNullable<Awaited<ReturnType<typeof saveChapterTimeline>>>
+    export type SaveChapterTimelineMutationBody = BodyType<EditorInput>
+    export type SaveChapterTimelineMutationError = ErrorType<unknown>
+    export type SaveChapterTimelineMutationVariables = {chapterId: number;data: BodyType<EditorInput>}
+
+    export const useSaveChapterTimeline = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveChapterTimeline>>, TError,SaveChapterTimelineMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveChapterTimeline>>,
+        TError,
+        SaveChapterTimelineMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveChapterTimelineMutationOptions(options));
+    }
+
+export const getAutoAssembleChapterUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/timeline/chapters/${chapterId}/auto-assemble`
+}
+
+export const autoAssembleChapter = async (chapterId: number,
+    editorInput: EditorInput, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EditorEnvelope>(getAutoAssembleChapterUrl(chapterId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(editorInput)
+  }
+);}
+
+
+
+
+
+export const getAutoAssembleChapterMutationKey = () => ['autoAssembleChapter'] as const;
+
+export const getAutoAssembleChapterMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof autoAssembleChapter>>, TError,AutoAssembleChapterMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof autoAssembleChapter>>, TError,AutoAssembleChapterMutationVariables, TContext> => {
+
+const mutationKey = getAutoAssembleChapterMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof autoAssembleChapter>>, AutoAssembleChapterMutationVariables> = (props) => {
+          const {chapterId,data} = props ?? {};
+
+          return  autoAssembleChapter(chapterId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AutoAssembleChapterMutationResult = NonNullable<Awaited<ReturnType<typeof autoAssembleChapter>>>
+    export type AutoAssembleChapterMutationBody = BodyType<EditorInput>
+    export type AutoAssembleChapterMutationError = ErrorType<unknown>
+    export type AutoAssembleChapterMutationVariables = {chapterId: number;data: BodyType<EditorInput>}
+
+    export const useAutoAssembleChapter = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof autoAssembleChapter>>, TError,AutoAssembleChapterMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof autoAssembleChapter>>,
+        TError,
+        AutoAssembleChapterMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAutoAssembleChapterMutationOptions(options));
+    }
+
+export const getRenderChapterTimelineUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/timeline/chapters/${chapterId}/render`
+}
+
+export const renderChapterTimeline = async (chapterId: number,
+    editorInput: EditorInput, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EditorEnvelope>(getRenderChapterTimelineUrl(chapterId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(editorInput)
+  }
+);}
+
+
+
+
+
+export const getRenderChapterTimelineMutationKey = () => ['renderChapterTimeline'] as const;
+
+export const getRenderChapterTimelineMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renderChapterTimeline>>, TError,RenderChapterTimelineMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof renderChapterTimeline>>, TError,RenderChapterTimelineMutationVariables, TContext> => {
+
+const mutationKey = getRenderChapterTimelineMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof renderChapterTimeline>>, RenderChapterTimelineMutationVariables> = (props) => {
+          const {chapterId,data} = props ?? {};
+
+          return  renderChapterTimeline(chapterId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RenderChapterTimelineMutationResult = NonNullable<Awaited<ReturnType<typeof renderChapterTimeline>>>
+    export type RenderChapterTimelineMutationBody = BodyType<EditorInput>
+    export type RenderChapterTimelineMutationError = ErrorType<unknown>
+    export type RenderChapterTimelineMutationVariables = {chapterId: number;data: BodyType<EditorInput>}
+
+    export const useRenderChapterTimeline = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renderChapterTimeline>>, TError,RenderChapterTimelineMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof renderChapterTimeline>>,
+        TError,
+        RenderChapterTimelineMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRenderChapterTimelineMutationOptions(options));
+    }
+
+export const getPublishChapterTimelineUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/timeline/chapters/${chapterId}/publish`
+}
+
+export const publishChapterTimeline = async (chapterId: number,
+    editorInput: EditorInput, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EditorEnvelope>(getPublishChapterTimelineUrl(chapterId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(editorInput)
+  }
+);}
+
+
+
+
+
+export const getPublishChapterTimelineMutationKey = () => ['publishChapterTimeline'] as const;
+
+export const getPublishChapterTimelineMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishChapterTimeline>>, TError,PublishChapterTimelineMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof publishChapterTimeline>>, TError,PublishChapterTimelineMutationVariables, TContext> => {
+
+const mutationKey = getPublishChapterTimelineMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof publishChapterTimeline>>, PublishChapterTimelineMutationVariables> = (props) => {
+          const {chapterId,data} = props ?? {};
+
+          return  publishChapterTimeline(chapterId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PublishChapterTimelineMutationResult = NonNullable<Awaited<ReturnType<typeof publishChapterTimeline>>>
+    export type PublishChapterTimelineMutationBody = BodyType<EditorInput>
+    export type PublishChapterTimelineMutationError = ErrorType<unknown>
+    export type PublishChapterTimelineMutationVariables = {chapterId: number;data: BodyType<EditorInput>}
+
+    export const usePublishChapterTimeline = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof publishChapterTimeline>>, TError,PublishChapterTimelineMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof publishChapterTimeline>>,
+        TError,
+        PublishChapterTimelineMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPublishChapterTimelineMutationOptions(options));
+    }
+
+export const getAskBookQuestionUrl = () => {
+
+
+
+
+  return `/api/ask`
+}
+
+export const askBookQuestion = async (askInput: AskInput, options?: Parameters<typeof customFetch>[1]): Promise<AskAnswer> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AskAnswer>(getAskBookQuestionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(askInput)
+  }
+);}
+
+
+
+
+
+export const getAskBookQuestionMutationKey = () => ['askBookQuestion'] as const;
+
+export const getAskBookQuestionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askBookQuestion>>, TError,AskBookQuestionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof askBookQuestion>>, TError,AskBookQuestionMutationVariables, TContext> => {
+
+const mutationKey = getAskBookQuestionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof askBookQuestion>>, AskBookQuestionMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  askBookQuestion(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AskBookQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof askBookQuestion>>>
+    export type AskBookQuestionMutationBody = BodyType<AskInput>
+    export type AskBookQuestionMutationError = ErrorType<unknown>
+    export type AskBookQuestionMutationVariables = {data: BodyType<AskInput>}
+
+    export const useAskBookQuestion = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askBookQuestion>>, TError,AskBookQuestionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof askBookQuestion>>,
+        TError,
+        AskBookQuestionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAskBookQuestionMutationOptions(options));
+    }
+
+export const getGetQuestionHistoryUrl = (params: GetQuestionHistoryParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/ask/history?${stringifiedParams}` : `/api/ask/history`
+}
+
+export const getQuestionHistory = async (params: GetQuestionHistoryParams, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+  return customFetch<EditorEnvelope>(getGetQuestionHistoryUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetQuestionHistoryQueryKey = (params?: GetQuestionHistoryParams,) => {
+    return [
+    `/api/ask/history`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetQuestionHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getQuestionHistory>>, TError = ErrorType<unknown>>(params: GetQuestionHistoryParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getQuestionHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetQuestionHistoryQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getQuestionHistory>>> = ({ signal }) => getQuestionHistory(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getQuestionHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetQuestionHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getQuestionHistory>>>
+export type GetQuestionHistoryQueryError = ErrorType<unknown>
+
+
+
+export function useGetQuestionHistory<TData = Awaited<ReturnType<typeof getQuestionHistory>>, TError = ErrorType<unknown>>(
+ params: GetQuestionHistoryParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getQuestionHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetQuestionHistoryQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetQuestionInsightsUrl = () => {
+
+
+
+
+  return `/api/admin/questions`
+}
+
+export const getQuestionInsights = async ( options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+  return customFetch<EditorEnvelope>(getGetQuestionInsightsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetQuestionInsightsQueryKey = () => {
+    return [
+    `/api/admin/questions`
+    ] as const;
+    }
+
+
+export const getGetQuestionInsightsQueryOptions = <TData = Awaited<ReturnType<typeof getQuestionInsights>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getQuestionInsights>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetQuestionInsightsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getQuestionInsights>>> = ({ signal }) => getQuestionInsights({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getQuestionInsights>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetQuestionInsightsQueryResult = NonNullable<Awaited<ReturnType<typeof getQuestionInsights>>>
+export type GetQuestionInsightsQueryError = ErrorType<unknown>
+
+
+
+export function useGetQuestionInsights<TData = Awaited<ReturnType<typeof getQuestionInsights>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getQuestionInsights>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetQuestionInsightsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getGetBookProductionUrl = (bookId: number,) => {
 

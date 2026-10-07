@@ -19,6 +19,9 @@ router.get("/production/media/:assetId",async(req,res)=>{
       EXISTS(SELECT 1 FROM assets legacy JOIN scene_versions v ON v.id=legacy.scene_version_id
         WHERE legacy.metadata->>'productionAssetId'=a.id::text AND v.render_status='published')
       OR EXISTS(SELECT 1 FROM chapter_media_renders r WHERE r.asset_id=a.id AND r.status='published')
+      OR EXISTS(SELECT 1 FROM timeline_renders r WHERE r.asset_id=a.id AND r.status='published')
+      OR EXISTS(SELECT 1 FROM timeline_renders r JOIN media_production_assets video ON video.id=r.asset_id
+        WHERE video.metadata->>'captionAssetId'=a.id::text AND r.status='published')
     ) public_ready FROM media_production_assets a
     JOIN media_productions p ON p.id=a.production_id JOIN visual_editions e ON e.id=p.edition_id WHERE a.id=$1`,[parseId(req.params.assetId)])).rows[0];
   if(!asset)fail(404,"Media not found");

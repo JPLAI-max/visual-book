@@ -2,6 +2,7 @@ import app from "./app";
 import { logger } from "./lib/logger";
 import { startIntelligenceEngine } from "./services/intelligence/worker";
 import { startProductionEngine } from "./services/production/worker";
+import { startTimelineEngine } from "./services/editor/render";
 
 const rawPort = process.env["PORT"];
 
@@ -26,4 +27,5 @@ app.listen(port, (err) => {
   logger.info({ port }, "Server listening");
   startIntelligenceEngine();
   startProductionEngine();
+  startTimelineEngine();
 });
