@@ -1,0 +1,413 @@
+Preserve everything currently working.
+
+DO NOT redesign the consumer UI.
+DO NOT redesign the player.
+DO NOT remove or replace the chapter editor.
+DO NOT change Ask AI.
+
+This phase is specifically about making the generated visual book feel like something being WATCHED rather than a slideshow of AI images.
+
+CORE GOAL
+
+Transform each scene into a sequence of intentional cinematic shots.
+
+The system should behave like an AI visual director.
+
+It should decide:
+
+What should we see?
+When should the shot change?
+Should this be wide, medium, close-up, detail, reaction, environment, or action?
+What camera movement should be used?
+Which moments actually need AI video?
+How should the imagery support the narration?
+
+--------------------------------------------------
+1. CREATE A VISUAL DIRECTOR SERVICE
+--------------------------------------------------
+
+Add a Visual Director service between:
+
+SCENE PLAN
+
+and
+
+MEDIA GENERATION
+
+New pipeline:
+
+Book
+→ Chapter
+→ Scene
+→ Visual Director
+→ Shot List
+→ Asset Generation
+→ Timeline Assembly
+→ Playback
+
+The Visual Director receives:
+
+scene summary
+scene narration
+characters
+environment
+scene duration
+previous scene
+next scene
+visual style bible
+character bible
+environment bible
+
+It outputs a structured shot list.
+
+--------------------------------------------------
+2. SHOT LIST
+--------------------------------------------------
+
+Each scene should contain multiple shots when appropriate.
+
+Each shot should include:
+
+shot_number
+shot_type
+start_time
+duration
+visual_subject
+characters
+environment
+composition
+camera_angle
+camera_distance
+camera_movement
+action
+emotion
+lighting
+continuity_notes
+generation_prompt
+motion_recommendation
+
+SHOT TYPES
+
+ESTABLISHING
+WIDE
+MEDIUM
+CLOSE_UP
+EXTREME_CLOSE_UP
+OVER_SHOULDER
+POV
+REACTION
+DETAIL
+INSERT
+ENVIRONMENT
+ACTION
+TRANSITION
+
+Do not randomly alternate shot types.
+
+Shot selection should support storytelling.
+
+--------------------------------------------------
+3. VISUAL PACING
+--------------------------------------------------
+
+Do not hold one image for long narration unless intentionally appropriate.
+
+Create configurable pacing rules.
+
+As a starting point:
+
+Short narration:
+1–2 shots
+
+Medium scene:
+2–4 shots
+
+Longer scene:
+4–8 shots
+
+These are guidelines, not rigid rules.
+
+The Visual Director should determine pacing based on what is happening.
+
+Quiet emotional moments can hold longer.
+
+Action or information-dense moments can cut faster.
+
+--------------------------------------------------
+4. VISUALIZE THE WORDS
+--------------------------------------------------
+
+Do not simply generate an image of the person currently being discussed.
+
+Use imagery to explain the narration.
+
+Example:
+
+Narration discusses Victor becoming increasingly obsessed.
+
+Possible sequence:
+
+Shot 1:
+Night exterior of laboratory.
+
+Shot 2:
+Victor surrounded by books and notes.
+
+Shot 3:
+Close-up of exhausted eyes.
+
+Shot 4:
+Hands working obsessively.
+
+Shot 5:
+Candle nearly burned away.
+
+That communicates obsession visually.
+
+The Visual Director should think in visual storytelling terms.
+
+--------------------------------------------------
+5. CONTINUITY
+--------------------------------------------------
+
+Every generated shot must inherit:
+
+character references
+wardrobe state
+environment references
+time of day
+weather
+important props
+visual style
+previous-shot continuity
+
+Create scene continuity metadata.
+
+Example:
+
+Victor:
+same dark coat
+hair increasingly disheveled
+ink stain on right hand
+
+Laboratory:
+night
+three candles
+storm outside
+same work table
+
+Carry these details across relevant shots.
+
+--------------------------------------------------
+6. SHOT GENERATION
+--------------------------------------------------
+
+Generate individual images for each approved shot.
+
+Do not generate the entire scene as one image.
+
+Use canonical reference images whenever supported.
+
+Store each shot independently.
+
+--------------------------------------------------
+7. MOTION DECISION
+--------------------------------------------------
+
+For every shot, determine the appropriate motion type.
+
+Options:
+
+STATIC
+PAN_ZOOM
+PARALLAX
+AI_VIDEO_RECOMMENDED
+AI_VIDEO
+
+Do not automatically use AI video everywhere.
+
+Examples:
+
+Landscape:
+slow pan
+
+Portrait/emotional moment:
+slow push-in
+
+Object/detail:
+subtle zoom
+
+Walking/action:
+AI_VIDEO_RECOMMENDED
+
+Major dramatic event:
+AI_VIDEO_RECOMMENDED
+
+--------------------------------------------------
+8. AI VIDEO UPGRADE ARCHITECTURE
+--------------------------------------------------
+
+Create an admin action:
+
+UPGRADE TO VIDEO
+
+When selected:
+
+use the existing approved shot image
+use the shot's motion/action description
+send it to the configured video provider
+receive video
+create a new shot asset version
+
+Do not change:
+
+narration
+captions
+scene timing
+chapter
+surrounding shots
+
+AI video is an upgrade to an individual shot.
+
+--------------------------------------------------
+9. VIDEO PROVIDER PLACEHOLDER
+--------------------------------------------------
+
+Keep video provider modular.
+
+Support a provider interface such as:
+
+generateVideoFromImage()
+
+Do not make fal.ai or any single provider inseparable from the architecture.
+
+If fal.ai is connected, implement it through the provider adapter.
+
+If it is not connected, AI_VIDEO_RECOMMENDED shots should continue using PAN_ZOOM or PARALLAX until upgraded.
+
+--------------------------------------------------
+10. AUTOMATIC CHAPTER ASSEMBLY
+--------------------------------------------------
+
+After shot generation:
+
+Automatically place shots into the existing editor timeline.
+
+Align them with narration.
+
+Apply recommended camera movement.
+
+Apply restrained transitions.
+
+Align captions.
+
+The admin should receive an already assembled first cut.
+
+The admin should not need to manually build every chapter.
+
+--------------------------------------------------
+11. DIRECTOR REVIEW
+--------------------------------------------------
+
+In the existing admin editor add:
+
+REGENERATE SHOT
+CHANGE SHOT TYPE
+CHANGE COMPOSITION
+CHANGE CAMERA
+CHANGE MOTION
+UPGRADE TO VIDEO
+APPROVE SHOT
+
+Also add:
+
+RE-DIRECT SCENE
+
+This should create a new proposed shot list without destroying the current one.
+
+--------------------------------------------------
+12. CHAPTER QUALITY CHECK
+--------------------------------------------------
+
+Before publication, run a chapter-level visual review.
+
+Check for:
+
+character inconsistency
+wardrobe changes
+environment inconsistency
+repetitive compositions
+too many close-ups
+too many static shots
+awkward pacing
+duplicate imagery
+historical inaccuracies
+visual generation artifacts
+
+Return recommendations.
+
+Do not automatically regenerate the whole chapter.
+
+--------------------------------------------------
+13. FIRST TEST
+--------------------------------------------------
+
+Use the chapter already built.
+
+Do not create another full book yet.
+
+Take the existing Frankenstein chapter and run it through the Visual Director.
+
+Compare:
+
+CURRENT VERSION
+
+versus
+
+DIRECTED VERSION
+
+The Directed Version should contain intentional shot changes and feel significantly more cinematic.
+
+--------------------------------------------------
+14. IMPORTANT COST RULE
+--------------------------------------------------
+
+Track the generation cost of every additional shot.
+
+The admin should be able to see:
+
+Chapter Generation Cost
+Number of Images
+Number of AI Video Shots
+Estimated Video Upgrade Cost
+
+This will allow us to determine the economically optimal combination of:
+
+AI images
+camera movement
+parallax
+AI video
+
+--------------------------------------------------
+15. SUCCESS CRITERIA
+--------------------------------------------------
+
+This phase succeeds when a viewer can watch the Frankenstein chapter and it no longer feels like:
+
+"AI generated some pictures and put narration over them."
+
+It should begin to feel like:
+
+"Someone visually directed this book."
+
+The system should automatically create the majority of that experience without requiring a human editor to build every shot manually.
+
+CORE PRINCIPLE
+
+AI VIDEO IS NOT THE PRODUCT.
+
+VISUAL STORYTELLING IS THE PRODUCT.
+
+Use expensive video generation where movement adds meaningful value.
+
+Use strong composition, editing, pacing, narration, and controlled camera movement everywhere else.
