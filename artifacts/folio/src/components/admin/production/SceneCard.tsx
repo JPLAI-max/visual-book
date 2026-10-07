@@ -49,7 +49,7 @@ export function SceneCard({ scene, prod, busy, refsOk, aiVideo, threshold, run }
           <button className="btn btn-sm btn-quiet" disabled={off || !modeOk(mode)} onClick={() => run({ operation: 'regenerate_video', ...base, motionType: mode }, 'Video queued')} data-testid={`button-regenerate-video-${id}`}>Regenerate Video</button>
           <button className="btn btn-sm btn-quiet" disabled={off} onClick={() => run({ operation: 'regenerate_voice', ...base }, 'Voice queued')} data-testid={`button-regenerate-voice-${id}`}>Regenerate Voice</button>
           <button className="btn btn-sm btn-quiet" disabled={off || !shown} onClick={() => { setPrompt(shown?.prompt ?? ''); setNeg(shown?.negative_prompt ?? ''); setEdit(!edit); }} data-testid={`button-edit-prompt-${id}`}>Edit Prompt</button>
-          {aiVideo && <button className="btn btn-sm btn-quiet" disabled={off} onClick={() => run({ operation: 'upgrade_ai_video', ...base }, 'AI video queued')} data-testid={`button-upgrade-ai-${id}`}>Upgrade to AI video</button>}
+          {aiVideo && <button className="btn btn-sm btn-quiet" disabled={off} onClick={() => run({ operation: 'upgrade_ai_video', ...base }, 'AI video queued')} data-testid={`button-upgrade-ai-${id}`}>Upgrade to AI Video</button>}
         </div>
         <p className="mt-2 max-w-xl text-xs text-muted-foreground">Motion is camera movement over the still image. Characters are not animated.</p>
         {edit && shown && (
