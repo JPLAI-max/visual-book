@@ -3,7 +3,7 @@ import type { Book } from '@workspace/api-client-react';
 import { Cover } from './Cover';
 import { human, label } from '@/lib/format';
 
-export const playable = (b: Book) => b.sample && b.chapterCount > 0;
+export const playable = (b: Book) => b.status === 'published' && b.chapterCount > 0;
 
 export function BookCard({ book, i = 0 }: { book: Book; i?: number }) {
   const p = book.progress;
@@ -13,7 +13,7 @@ export function BookCard({ book, i = 0 }: { book: Book; i?: number }) {
       <h3 className="serif mt-4 text-xl leading-tight">{book.title}</h3>
       <p className="text-sm text-muted-foreground">{book.author}</p>
       <p className="mt-1 text-xs text-muted-foreground" data-testid={`text-status-${book.id}`}>
-        {playable(book) ? `Sample edition · ${human(book.duration)} · ${book.chapterCount} chapters` : label(book.status)}
+        {playable(book) ? `${book.sample ? 'Sample edition' : 'Visual edition'} · ${human(book.duration)} · ${book.chapterCount} chapters` : label(book.status)}
       </p>
       {p && p.percentage > 0 && (
         <div className="mt-3 h-px w-full bg-border"><div className="h-px bg-primary transition-all" style={{ width: `${Math.min(100, p.percentage)}%` }} /></div>
