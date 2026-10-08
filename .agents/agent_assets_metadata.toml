@@ -76,3 +76,17 @@ mtime_ms = 1791417226885
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:d579bbd2-c44a-43d7-a0f1-878aac5c1e28/fe13aae3-901f-4cb9-ba34-9e118f71d712/7e6a3996-94b4-4dd3-932c-b6421a6c857e"
 storage_version_token = "1791418077206232"
 content_type = "video/webm"
+
+[[outputs]]
+id = "R2KhXQ9sjyyuRGJBMy1lf"
+uri = "file://exports/frankenstein-chapter1-directed-with-text.webm"
+type = "video"
+title = "Frankenstein — Directed Chapter 1 WITH TEXT"
+description = "Corrected 1080p video with synchronized narration captions embedded directly into the picture. Text remains visible when played or downloaded. Original images, camera motion, narration and timing preserved."
+logical_id = "e7aa47f0-f059-4ab4-844c-d9bf071a026d"
+content_hash = "sha256:31316619c62c1aed197998e53d256c31cf55fd716d7906634d9e3ac6539137ba"
+size = 18348706
+mtime_ms = 1791418733541
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:d579bbd2-c44a-43d7-a0f1-878aac5c1e28/e7aa47f0-f059-4ab4-844c-d9bf071a026d/d2cb105d-3052-4351-bf4e-bd86736d190a"
+storage_version_token = "1791418806187502"
+content_type = "video/webm"

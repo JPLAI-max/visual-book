@@ -3,3 +3,4 @@
 - [Browser video codecs](browser-video-codecs.md) — valid MP4 can fail in a browser without H.264/AAC; check canPlayType before changing media delivery.
 - [Reader entry verification](reader-entry-verification.md) — verify anonymous search → book → watch for generated editions; direct player links can bypass availability bugs.
 - [Clerk CLI output](clerk-cli-output.md) — development SDK telemetry can precede structured stdout; extract the designated JSON line.
+- [Captioned video delivery](captioned-video-delivery.md) — standalone chapter demos need visible synchronized text; app caption overlays do not travel with a downloaded movie.
