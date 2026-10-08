@@ -19,6 +19,7 @@
 
 export * from "./catalog";
 export * from "./editor";
+export * from "./director";
 export * from "./readers";
 export * from "./editorial";
 export * from "./intelligence";

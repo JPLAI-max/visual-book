@@ -17,7 +17,11 @@ export async function editorSource(chapterId: number) {
     UNION SELECT t.video_asset_id FROM media_scene_takes t JOIN media_production_scenes s ON s.id=t.scene_id WHERE s.production_id=$1 AND t.status='approved' AND t.motion_type='AI_VIDEO'
     UNION SELECT t.audio_asset_id FROM media_scene_takes t JOIN media_production_scenes s ON s.id=t.scene_id WHERE s.production_id=$1 AND t.status='approved'
     UNION SELECT t.caption_asset_id FROM media_scene_takes t JOIN media_production_scenes s ON s.id=t.scene_id WHERE s.production_id=$1 AND t.status='approved'
-    UNION SELECT current_asset_id FROM media_references WHERE production_id=$1 AND status='approved')`, [chapter.production_id])).rows;
+    UNION SELECT current_asset_id FROM media_references WHERE production_id=$1 AND status='approved'
+    UNION SELECT v.image_asset_id FROM director_shot_versions v JOIN director_shots sh ON sh.id=v.shot_id
+      JOIN director_scenes ds ON ds.id=sh.scene_plan_id JOIN director_runs r ON r.id=ds.run_id WHERE r.production_id=$1 AND v.status='approved'
+    UNION SELECT v.video_asset_id FROM director_shot_versions v JOIN director_shots sh ON sh.id=v.shot_id
+      JOIN director_scenes ds ON ds.id=sh.scene_plan_id JOIN director_runs r ON r.id=ds.run_id WHERE r.production_id=$1 AND v.status='approved')`, [chapter.production_id])).rows;
   const assets: Asset[] = assetRows.map(a => ({
     id: a.id, kind: a.mime_type.startsWith("image/") ? "image" : a.mime_type.startsWith("audio/") ? "audio" : a.mime_type === "text/vtt" ? "captions" : "video", mime: a.mime_type,
     url: assetUrl(a.id), name: refs.find(r => r.current_asset_id === a.id)?.name ??

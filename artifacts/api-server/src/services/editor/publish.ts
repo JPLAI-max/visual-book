@@ -4,6 +4,7 @@ import { assertRights } from "../catalog";
 import { assetUrl } from "../production/assets";
 import { definitionSchema, validateTimeline } from "./types";
 import { editorSource, timelineState } from "./timeline";
+import { assertDirectorReview } from "../director/assembly";
 
 export async function publishTimeline(chapterId: number, revision: number, renderId: number, dryRun = false) {
   const source = await editorSource(chapterId);
@@ -16,6 +17,7 @@ export async function publishTimeline(chapterId: number, revision: number, rende
     const render = (await client.query("SELECT * FROM timeline_renders WHERE id=$1 AND chapter_id=$2 FOR UPDATE", [renderId, chapterId])).rows[0];
     if (!render || render.status !== "ready" || render.revision !== revision || current?.revision !== revision) fail(409, "Publish a ready render of the current saved timeline revision.");
     const definition = definitionSchema.parse(render.definition);
+    await assertDirectorReview(definition, client);
     try { validateTimeline(definition, source.scenes, source.assets); } catch (error) { fail(409, (error as Error).message); }
     for (const scene of definition.scenes) {
       const output = render.scene_assets.find((asset: { sceneId: number }) => asset.sceneId === scene.id);

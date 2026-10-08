@@ -28,6 +28,7 @@ import type {
   Book,
   BookDetail,
   BookInput,
+  DirectorInput,
   EditorEnvelope,
   EditorInput,
   EventInput,
@@ -74,6 +75,160 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetVisualDirectorUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/director/chapters/${chapterId}`
+}
+
+export const getVisualDirector = async (chapterId: number, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+  return customFetch<EditorEnvelope>(getGetVisualDirectorUrl(chapterId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetVisualDirectorQueryKey = (chapterId: number,) => {
+    return [
+    `/api/admin/director/chapters/${chapterId}`
+    ] as const;
+    }
+
+
+export const getGetVisualDirectorQueryOptions = <TData = Awaited<ReturnType<typeof getVisualDirector>>, TError = ErrorType<unknown>>(chapterId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getVisualDirector>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetVisualDirectorQueryKey(chapterId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getVisualDirector>>> = ({ signal }) => getVisualDirector(chapterId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: chapterId !== null && chapterId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getVisualDirector>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetVisualDirectorQueryResult = NonNullable<Awaited<ReturnType<typeof getVisualDirector>>>
+export type GetVisualDirectorQueryError = ErrorType<unknown>
+
+
+
+export function useGetVisualDirector<TData = Awaited<ReturnType<typeof getVisualDirector>>, TError = ErrorType<unknown>>(
+ chapterId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getVisualDirector>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetVisualDirectorQueryOptions(chapterId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getVisualDirectorActionUrl = (chapterId: number,) => {
+
+
+
+
+  return `/api/admin/director/chapters/${chapterId}`
+}
+
+export const visualDirectorAction = async (chapterId: number,
+    directorInput: DirectorInput, options?: Parameters<typeof customFetch>[1]): Promise<EditorEnvelope> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EditorEnvelope>(getVisualDirectorActionUrl(chapterId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(directorInput)
+  }
+);}
+
+
+
+
+
+export const getVisualDirectorActionMutationKey = () => ['visualDirectorAction'] as const;
+
+export const getVisualDirectorActionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof visualDirectorAction>>, TError,VisualDirectorActionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof visualDirectorAction>>, TError,VisualDirectorActionMutationVariables, TContext> => {
+
+const mutationKey = getVisualDirectorActionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof visualDirectorAction>>, VisualDirectorActionMutationVariables> = (props) => {
+          const {chapterId,data} = props ?? {};
+
+          return  visualDirectorAction(chapterId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VisualDirectorActionMutationResult = NonNullable<Awaited<ReturnType<typeof visualDirectorAction>>>
+    export type VisualDirectorActionMutationBody = BodyType<DirectorInput>
+    export type VisualDirectorActionMutationError = ErrorType<unknown>
+    export type VisualDirectorActionMutationVariables = {chapterId: number;data: BodyType<DirectorInput>}
+
+    export const useVisualDirectorAction = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof visualDirectorAction>>, TError,VisualDirectorActionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof visualDirectorAction>>,
+        TError,
+        VisualDirectorActionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVisualDirectorActionMutationOptions(options));
+    }
 
 export const getListEditorChaptersUrl = () => {
 

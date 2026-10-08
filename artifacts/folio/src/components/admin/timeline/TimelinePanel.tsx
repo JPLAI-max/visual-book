@@ -7,6 +7,7 @@ import {
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
 import { Block, ErrorState, Message } from '@/components/States';
 import { ShotPreview } from './ShotPreview';
+import { DirectorPanel } from '../director/DirectorPanel';
 import {
   PRESETS, errMsg, fitToNarration, normalize, r2, sceneIssues, MIN_SHOT, isVisual, moveBoundary,
   type EditorChapter, type Preset, type Shot, type TAsset, type TimelineDoc, type TimelineScene, type Transition, type PanDir,
@@ -234,6 +235,8 @@ function Editor({ chapterId }: { chapterId: number }) {
           );
         })}
       </div>
+
+      <DirectorPanel chapterId={chapterId} revision={base.current} dirty={dirty} />
 
       <section>
         <h3 className="serif mb-3 text-2xl">Renders</h3>

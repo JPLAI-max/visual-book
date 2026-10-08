@@ -5,6 +5,39 @@
  * Folio visual book catalog and editorial API
  * OpenAPI spec version: 1.0.0
  */
+export type DirectorInputAction = typeof DirectorInputAction[keyof typeof DirectorInputAction];
+
+
+export const DirectorInputAction = {
+  direct: 'direct',
+  re_direct_scene: 're_direct_scene',
+  generate: 'generate',
+  approve: 'approve',
+  edit: 'edit',
+  regenerate: 'regenerate',
+  upgrade_video: 'upgrade_video',
+  assemble: 'assemble',
+  review: 'review',
+  retry: 'retry',
+  compare: 'compare',
+} as const;
+
+export type DirectorInputChanges = {[key: string]: unknown};
+
+export type DirectorInputPacing = {[key: string]: unknown};
+
+export interface DirectorInput {
+  action: DirectorInputAction;
+  runId?: number;
+  sceneId?: number;
+  shotId?: number;
+  versionId?: number;
+  jobId?: number;
+  revision?: number;
+  changes?: DirectorInputChanges;
+  pacing?: DirectorInputPacing;
+}
+
 export type EditorEnvelopeData = { [key: string]: unknown };
 
 export interface EditorEnvelope {

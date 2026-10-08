@@ -6,6 +6,32 @@ info:
 servers:
   - url: /api
 paths:
+  /admin/director/chapters/{chapterId}:
+    parameters:
+      - { name: chapterId, in: path, required: true, schema: { type: integer } }
+    get:
+      operationId: getVisualDirector
+      tags: [director]
+      responses:
+        "200":
+          description: Versioned director plans, shot assets, comparison cuts, review and cost ledger
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
+    post:
+      operationId: visualDirectorAction
+      tags: [director]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DirectorInput" }
+      responses:
+        "200":
+          description: Saved action or durable generation job
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EditorEnvelope" }
   /admin/timeline/chapters:
     get:
       operationId: listEditorChapters
@@ -416,6 +442,21 @@ paths:
               schema: { $ref: "#/components/schemas/Success" }
 components:
   schemas:
+    DirectorInput:
+      type: object
+      required: [action]
+      properties:
+        action:
+          type: string
+          enum: [direct, re_direct_scene, generate, approve, edit, regenerate, upgrade_video, assemble, review, retry, compare]
+        runId: { type: integer }
+        sceneId: { type: integer }
+        shotId: { type: integer }
+        versionId: { type: integer }
+        jobId: { type: integer }
+        revision: { type: integer }
+        changes: { type: object, additionalProperties: {} }
+        pacing: { type: object, additionalProperties: {} }
     EditorEnvelope:
       type: object
       required: [data]

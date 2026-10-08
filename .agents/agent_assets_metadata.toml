@@ -7,6 +7,7 @@ uri = "file://attached_assets/narration/scene-1.mp3"
 type = "audio"
 title = "Frankenstein sample scene 1"
 description = "Text-to-speech audio: At the edge of the known world, Robert Walton searches for a passage through the Arctic. His letters to his sister reveal more than ambition: he longs for a friend who understan…"
+logical_id = "4002904a-8aa7-4823-98aa-bd2be248754e"
 
 [[outputs]]
 id = "oYpK5Nnm4cM4dNJpyhrOQ"
@@ -14,6 +15,7 @@ uri = "file://attached_assets/narration/scene-2.mp3"
 type = "audio"
 title = "Frankenstein sample scene 2"
 description = "Text-to-speech audio: Walton wants discovery and glory. Victor recognizes the same dangerous hunger in him. Rather than celebrating his achievements, Victor offers a warning: knowledge can become des…"
+logical_id = "6d513d90-684e-49c4-b1bf-f49fdbddffee"
 
 [[outputs]]
 id = "psbZl4mTyf_vQRUYf39zh"
@@ -21,6 +23,7 @@ uri = "file://attached_assets/narration/scene-5.mp3"
 type = "audio"
 title = "Frankenstein sample scene 5"
 description = "Text-to-speech audio: At the university in Ingolstadt, Victor finds teachers who encourage his scientific promise. Chemistry and anatomy offer methods where older books offered dreams. He throws hims…"
+logical_id = "56cdd405-9e59-463c-9ff1-1c68fd1b07d3"
 
 [[outputs]]
 id = "3sMIfzffr7OHcHx1ozxbt"
@@ -28,6 +31,7 @@ uri = "file://attached_assets/narration/scene-3.mp3"
 type = "audio"
 title = "Frankenstein sample scene 3"
 description = "Text-to-speech audio: Victor grows up in Geneva, surrounded by affection and the beauty of the mountains. Elizabeth and Henry Clerval represent the relationships that give his life meaning. Yet Victo…"
+logical_id = "dfe3fe5f-5c29-4384-aebd-de5344f53813"
 
 [[outputs]]
 id = "BEyA8-zgyTYrtRRWygzLs"
@@ -35,6 +39,7 @@ uri = "file://attached_assets/narration/scene-4.mp3"
 type = "audio"
 title = "Frankenstein sample scene 4"
 description = "Text-to-speech audio: A lightning strike destroys a tree and awakens Victor's fascination with electricity. His interest moves from ancient speculation toward modern science. But his deepest desire r…"
+logical_id = "c0631544-bea9-4400-a957-059f6f6dd2ce"
 
 [[outputs]]
 id = "TvVgPdSvoE9bmIGyvM6Xt"
@@ -42,3 +47,32 @@ uri = "file://attached_assets/narration/scene-6.mp3"
 type = "audio"
 title = "Frankenstein sample scene 6"
 description = "Text-to-speech audio: Victor discovers a way to animate lifeless matter. He works in secret, collecting materials and assembling a body on a scale larger than an ordinary human. He imagines a new bei…"
+logical_id = "19c14071-be41-451b-9ca2-0a6c83e40d3d"
+
+[[outputs]]
+id = "NodHKa0vcZ2uAn0Sz644w"
+uri = "file://exports/frankenstein-chapter1-directed.webm"
+type = "video"
+title = "Frankenstein — Chapter 1, Directed Cut"
+description = "1080p cinematic illustrated chapter: 16 independently generated shots, restrained camera motion and original narration. Approximately 1 minute 49 seconds. Separate review cut; does not replace the current public chapter."
+logical_id = "2fbb6b9c-4efb-4eb2-a75a-05a9600c22ec"
+content_hash = "sha256:5c57086965d63ecd49b6ff93da96ddfc8a46040526b7f9a32565a36136a0c2b6"
+size = 19539605
+mtime_ms = 1791417226245
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:d579bbd2-c44a-43d7-a0f1-878aac5c1e28/2fbb6b9c-4efb-4eb2-a75a-05a9600c22ec/5628a090-0871-4b8c-8ab9-97f46ee34ea0"
+storage_version_token = "1791418076108651"
+content_type = "video/webm"
+
+[[outputs]]
+id = "KIXFyyL3HMmZ-KxEmmAuK"
+uri = "file://exports/frankenstein-chapter1-current.webm"
+type = "video"
+title = "Frankenstein — Chapter 1, Current Cut"
+description = "Existing 10-shot editor cut for comparison against the new directed version, using the same narration and timing."
+logical_id = "fe13aae3-901f-4cb9-ba34-9e118f71d712"
+content_hash = "sha256:fe5dbebc624014c58fc4847e111efe9ff6b86984d279c07c05b87fd3c364e5c7"
+size = 16920008
+mtime_ms = 1791417226885
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:d579bbd2-c44a-43d7-a0f1-878aac5c1e28/fe13aae3-901f-4cb9-ba34-9e118f71d712/7e6a3996-94b4-4dd3-932c-b6421a6c857e"
+storage_version_token = "1791418077206232"
+content_type = "video/webm"

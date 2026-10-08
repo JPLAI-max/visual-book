@@ -9,6 +9,8 @@ export const shotSchema = z.object({
   panDirection: z.enum(["left", "right", "up", "down", "none"]),
   transitionIn: z.enum(["CUT", "FADE"]), transitionOut: z.enum(["CUT", "FADE"]),
   foregroundAssetId: z.number().int().positive().optional(),
+  directorShotId: z.number().int().positive().optional(), directorVersionId: z.number().int().positive().optional(),
+  shotType: z.string().max(40).optional(), composition: z.string().max(1800).optional(), motionRecommendation: z.string().max(40).optional(),
 });
 export const sceneSchema = z.object({
   id: z.number().int().positive(), title: z.string().max(300), narration: z.string().max(15000),

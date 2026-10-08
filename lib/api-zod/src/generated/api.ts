@@ -8,6 +8,36 @@
 import * as zod from 'zod';
 
 
+export const GetVisualDirectorParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const GetVisualDirectorResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
+export const VisualDirectorActionParams = zod.object({
+  "chapterId": zod.coerce.number().int()
+})
+
+export const VisualDirectorActionBody = zod.object({
+  "action": zod.enum(['direct', 're_direct_scene', 'generate', 'approve', 'edit', 'regenerate', 'upgrade_video', 'assemble', 'review', 'retry', 'compare']),
+  "runId": zod.number().int().optional(),
+  "sceneId": zod.number().int().optional(),
+  "shotId": zod.number().int().optional(),
+  "versionId": zod.number().int().optional(),
+  "jobId": zod.number().int().optional(),
+  "revision": zod.number().int().optional(),
+  "changes": zod.record(zod.string(), zod.unknown()).optional(),
+  "pacing": zod.record(zod.string(), zod.unknown()).optional()
+})
+
+export const VisualDirectorActionResponse = zod.object({
+  "data": zod.record(zod.string(), zod.unknown())
+})
+
+
 export const ListEditorChaptersResponse = zod.object({
   "data": zod.record(zod.string(), zod.unknown())
 })

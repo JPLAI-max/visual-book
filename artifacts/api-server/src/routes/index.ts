@@ -6,6 +6,7 @@ import mediaRouter from "./media";
 import intelligenceRouter from "./intelligence";
 import productionRouter from "./production";
 import editorRouter from "./editor";
+import directorRouter from "./director";
 
 const router: IRouter = Router();
 
@@ -14,6 +15,7 @@ router.use(readerRouter);
 router.use(intelligenceRouter);
 router.use(productionRouter);
 router.use(editorRouter);
+router.use(directorRouter);
 router.use(adminRouter);
 router.use(mediaRouter);
 
