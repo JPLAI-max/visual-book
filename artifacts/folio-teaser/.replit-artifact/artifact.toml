@@ -1,0 +1,29 @@
+kind = "video"
+videoAspectRatio = "16:9"
+previewPath = "/folio-teaser/"
+title = "Folio — Books, Seen Slowly"
+description = "A separate 15-second widescreen promotional Animation using actual captures of Folio’s public catalog, Frankenstein book page and chapter player, with Folio branding and a classical instrumental soundtrack."
+version = "1.0.0"
+id = "artifacts/folio-teaser"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/folio-teaser/" ]
+localPort = 20713
+
+[services.development]
+run = "pnpm --filter @workspace/folio-teaser run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/folio-teaser", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/folio-teaser/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20713"
+BASE_PATH = "/folio-teaser/"

@@ -90,3 +90,10 @@ mtime_ms = 1791418733541
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:d579bbd2-c44a-43d7-a0f1-878aac5c1e28/e7aa47f0-f059-4ab4-844c-d9bf071a026d/d2cb105d-3052-4351-bf4e-bd86736d190a"
 storage_version_token = "1791418806187502"
 content_type = "video/webm"
+
+[[outputs]]
+id = "5mIWdg3BO0uefpG41fUXs"
+uri = "file://artifacts/folio-teaser/public/audio/bg_music.mp3"
+type = "audio"
+title = "classical bed"
+description = "Generated music: Classical chamber music instrumental for a quiet literary book film: solo piano with string quartet, 76 BPM, gentle opening arpeggio, warm build, clear lift at 7 seconds, soft resolv…"

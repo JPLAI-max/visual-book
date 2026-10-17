@@ -1,0 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+:root{--bg:hsl(40 33% 96%);--fg:hsl(24 22% 12%);--primary:hsl(8 52% 32%);--muted:hsl(36 22% 91%);--muted-fg:hsl(26 10% 38%);--serif:'Newsreader',Georgia,serif;--sans:'Hanken Grotesk',system-ui,sans-serif;--color-bg-light:var(--bg);}
+html,body,#root{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--sans);overflow:hidden;}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-0.01em}
+.eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.22em;font-size:1.9vmin;color:var(--muted-fg)}
+.grain::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.05;z-index:40;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
